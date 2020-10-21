@@ -17,6 +17,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
+
 import  { 
   RTCPeerConnection , 
   RTCIceCandidate , 
@@ -32,10 +33,7 @@ import  {
 const App: () => React$Node = () => {
   return (
     <View>
-      <TouchableOpacity>
         <Text style={styles.button}>Hello</Text>
-      </TouchableOpacity>
-
     </View>
       
   );
