@@ -4,7 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 
 import LoginScreen from './screens/LoginScreen';
 import CallScreen from './screens/CallScreen';
-import {SafeAreaView} from 'react-native-safe-area-context';
+
 
 const Stack = createStackNavigator();
 
