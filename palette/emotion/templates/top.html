@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>결과</h1>
+    {% for emo in emotions %}
+        <p>{{emo.mood1}} | {{emo.mood2}} | {{emo.mood3}} | {{emo.mood4}} | {{emo.mood5}} | {{emo.mood6}} | {{emo.mood7}} | {{emo.mood8}} || {{emo.date}}</p> 
+    {% endfor %}
+
+    <p>{{per}}</p>
+    <p>{{idx}}</p>
+</body>
+</html>
