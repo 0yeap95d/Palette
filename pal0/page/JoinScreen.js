@@ -30,14 +30,14 @@ export default function LoginScreen(props) {
     }else {
         setLoading(true);
         console.log('-- axios test --')
-        axios.get("http://127.0.0.1:8000/emotion/top/")
-        .then( res =>{
-            setLoading(false);
-            console.log(res);
-        }).catch(err=>{
-            setLoading(false);
-            console.log(err);
-        })
+        // axios.get("http://k3d102.p.ssafy.io:8000/emotion/top/")
+        // .then( res =>{
+        //     setLoading(false);
+        //     console.log(res);
+        // }).catch(err=>{
+        //     setLoading(false);
+        //     console.log(err);
+        // })
     }
   
   };
