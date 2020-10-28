@@ -19,6 +19,4 @@ urlpatterns = [
     # 유저정보수정
     path('updated/', views.updated, name='updated'),
     
-    path('test/', views.test, name='test'),
-    path('test2/', views.test2, name='test2'),
 ]

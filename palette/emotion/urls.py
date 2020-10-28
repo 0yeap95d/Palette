@@ -7,4 +7,6 @@ urlpatterns = [
    path('top/', views.top),
    path('statistics/', views.statistics),
    path('calendar/', views.calendar),
+
+   # path('/file', views.file),
 ]
