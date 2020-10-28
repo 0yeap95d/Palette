@@ -1,13 +1,43 @@
 import React, { useState } from 'react';
-import { Text, Alert, Button, View, StyleSheet,TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet,TouchableOpacity } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
-import { not } from 'react-native-reanimated';
+import axios from 'axios';
 
 export default function LoginScreen(props) {
   const [userId, setUserId] = useState('');
   const [userPw, setUserPw] = useState('');
 
+    const goLogin = () =>{
+        if(userId==''){
+            Alert.alert('아이디를 입력하세요')
+        }else if(userPw==''){
+            Alert.alert('비밀번호를 입력하세요')
+        }else {
+            // axios login 
+            // axios.get("http://k3d102.p.ssafy.io:8000/accounts/login/")
+            // .then(res =>{
+            //     console.log(res)
+            //     setLogin(userId);
+            //     AsyncStorage.setItem('userId', '')
+            //     props.navigation.push('Camera');
+            // }).catch(err =>{
+            //     console.log(err)
+            // })
+        }
+    }
+    const goSignup = () =>{
+        props.navigation.push('Join');
+    }
+
+    const setLogin = async (userId) =>{
+        console.log('로그인 유지 시키깅...');
+        try {
+          await AsyncStorage.setItem('userId', userId)
+        } catch (e) {
+          console.log(e)
+        }
+    }
 
   return (
     <View style={styles.root}>
@@ -17,7 +47,7 @@ export default function LoginScreen(props) {
             style={styles.inputText}
             placeholder="Email..." 
             placeholderTextColor="#003f5c"
-            onChangeText={text => this.setState({email:text})}/>
+            onChangeText={userId => setUserId(userId)}/>
         </View>
         <View style={styles.inputView} >
           <TextInput  
@@ -25,16 +55,21 @@ export default function LoginScreen(props) {
             style={styles.inputText}
             placeholder="Password..." 
             placeholderTextColor="#003f5c"
-            onChangeText={text => this.setState({password:text})}/>
+            onChangeText={userPw => setUserPw(userPw)}/>
         </View>
-        <TouchableOpacity>
-          <Text style={styles.forgot}>Forgot Password?</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.loginBtn}>
+
+        <TouchableOpacity 
+        style={styles.loginBtn}
+        onPress={goLogin}
+        >
           <Text style={styles.loginText}>LOGIN</Text>
         </TouchableOpacity>
+
         <TouchableOpacity>
-          <Text style={styles.forgot}>Signup</Text>
+          <Text 
+          style={styles.forgot}
+          onPress={goSignup}
+          >Signup</Text>
         </TouchableOpacity>
 
     </View>
@@ -69,11 +104,12 @@ const styles = StyleSheet.create({
   forgot:{
     color:"gray",
     fontSize:11,
+    marginTop:10,
     fontFamily : 'BMHANNAAir_ttf'
   },
   loginBtn:{
     width:"70%",
-    backgroundColor:"#C3B1F2",
+    backgroundColor:"#C8B6E5",
     borderRadius:25,
     height:50,
     alignItems:"center",
