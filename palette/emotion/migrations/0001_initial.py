@@ -34,7 +34,6 @@ class Migration(migrations.Migration):
                 ('mood5', models.FloatField()),
                 ('mood6', models.FloatField()),
                 ('mood7', models.FloatField()),
-                ('mood8', models.FloatField()),
                 ('date', models.DateTimeField(auto_now_add=True)),
                 ('userNo', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='emotion', to=settings.AUTH_USER_MODEL)),
             ],

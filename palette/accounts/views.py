@@ -76,24 +76,3 @@ def initinfo(request, user_pk):
 
     serializer = UserSerializer(user)
     return JsonResponse(serializer.data)
-
-@api_view(['POST'])
-@csrf_exempt
-def test(request):
-    print(request.data['age'])
-    print(request.data['gender'])
-    print(request.data['nickname'])
-    # age = request.POST['age']
-    # gender = request.POST['gender']
-    # nickname = request.POST['nickname']
-
-    # print(age)
-    # print(gender)
-    # print(nickname)
-    return HttpResponse('success', status=200)
-
-
-@api_view(['GET'])
-def test2(request):
-    
-    return Response(serializer.data)
