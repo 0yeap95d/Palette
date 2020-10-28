@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, ImageBackground} from 'react-native';
-import {Text} from 'react-native-paper';
+import {View, StyleSheet, ImageBackground,TouchableOpacity,Text} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Button} from 'react-native-paper';
 
@@ -17,17 +16,13 @@ export default function LoginScreen(props) {
             setLoading(false);
             props.navigation.push('Camera');
         } else {
-            // 로그인 안했으면 가입 유무 체크 ...
-            checkJoin();
+            // 로그인 안했으면 로그인 페이지
+            setLoading(false);
+            props.navigation.push('Login');
         }
     },[userId])
   };
   
-    const checkJoin = () => {
-        console.log('-- 가입 체크 --')
-        props.navigation.push('Join');
-        setLoading(false);
-    }; 
 
   return (
     <View style={styles.root}>
@@ -37,14 +32,15 @@ export default function LoginScreen(props) {
       resizeMode="cover"
       >
         <Text style={styles.logotxt}>Palette</Text>
-        <Button
-          mode="contained"
+        <TouchableOpacity 
           onPress={checkLogin}
           loading={loading}
-          style={styles.startbtn}
-          >
-          시작하기
-        </Button>
+          style={styles.startbtn}>
+          <Text style={styles.starttxt}>
+            시작하기
+          </Text>
+        </TouchableOpacity>
+     
       </ImageBackground>
     </View>
   );
@@ -52,9 +48,9 @@ export default function LoginScreen(props) {
 
 const styles = StyleSheet.create({
   root: {
-    backgroundColor: '#fff',
     flex: 1,
     justifyContent: 'center',
+    alignItems: 'center',
   },
   content: {
     width: '100%',
@@ -63,16 +59,24 @@ const styles = StyleSheet.create({
   },
   logotxt: {
     height: 70,
+    marginTop:40,
     alignItems: "center",
     fontSize: 60,
     fontFamily : "Golden Plains"
   },
   startbtn:{
-    position: "absolute",
-    bottom: 10,
-    width:'100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    position:'absolute',
+    bottom:0,
+    width:"70%",
+    backgroundColor:"#C3B1F2",
+    borderRadius:25,
+    height:50,
+    alignItems:"center",
+    justifyContent:"center",
+    marginBottom:40,
+  },
+  starttxt : {
+    color:'white',
     fontFamily : 'BMHANNAAir_ttf'
   }
 });

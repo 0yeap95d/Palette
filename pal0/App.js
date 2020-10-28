@@ -3,6 +3,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 
 import MainScreen from './page/MainScreen';  // 메인 로그인 버튼 
+import LoginScreen from './page/LoginScreen';  // 로그인
 import JoinScreen from './page/JoinScreen';  // 닉네임 성별 나이 기입 
 // import InsertInfoScreen from './page/InsertInfoScreen'; // 닉네임, 성별, 나이 기입
 // import CallScreen from './page/CallScreen'; 
@@ -24,6 +25,11 @@ const App = () => {
         <Stack.Screen
           name="Join" 
           component={JoinScreen}
+          options={{headerShown: false}}
+        />
+        <Stack.Screen
+          name="Login" 
+          component={LoginScreen}
           options={{headerShown: false}}
         />
         {/* <Stack.Screen 
