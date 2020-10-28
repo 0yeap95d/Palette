@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pal0.iml" filepath="$PROJECT_DIR$/.idea/modules/pal0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-793307638/pal0.@react-native-community_picker.iml" filepath="$PROJECT_DIR$/.idea/modules/-793307638/pal0.@react-native-community_picker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/pal0.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/pal0.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-124357138/pal0.react-native-community_async-storage.iml" filepath="$PROJECT_DIR$/.idea/modules/-124357138/pal0.react-native-community_async-storage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-180062101/pal0.react-native-community_masked-view.iml" filepath="$PROJECT_DIR$/.idea/modules/-180062101/pal0.react-native-community_masked-view.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-793307638/pal0.react-native-community_picker.iml" filepath="$PROJECT_DIR$/.idea/modules/-793307638/pal0.react-native-community_picker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-443459615/pal0.react-native-community_toolbar-android.iml" filepath="$PROJECT_DIR$/.idea/modules/-443459615/pal0.react-native-community_toolbar-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-950722868/pal0.react-native-gesture-handler.iml" filepath="$PROJECT_DIR$/.idea/modules/-950722868/pal0.react-native-gesture-handler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/616631773/pal0.react-native-incall-manager.iml" filepath="$PROJECT_DIR$/.idea/modules/616631773/pal0.react-native-incall-manager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1783787472/pal0.react-native-reanimated.iml" filepath="$PROJECT_DIR$/.idea/modules/1783787472/pal0.react-native-reanimated.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1834726453/pal0.react-native-safe-area-context.iml" filepath="$PROJECT_DIR$/.idea/modules/1834726453/pal0.react-native-safe-area-context.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-280239475/pal0.react-native-screens.iml" filepath="$PROJECT_DIR$/.idea/modules/-280239475/pal0.react-native-screens.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/258569454/pal0.react-native-seoul_kakao-login.iml" filepath="$PROJECT_DIR$/.idea/modules/258569454/pal0.react-native-seoul_kakao-login.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1074901878/pal0.react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/-1074901878/pal0.react-native-vector-icons.iml" />
+    </modules>
+  </component>
+</project>
