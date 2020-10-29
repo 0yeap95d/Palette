@@ -210,12 +210,14 @@ def save(request):
 
 
         if cv2.waitKey(10) == ord('q'):
+            # cv2.destroyAllWindows
+            cap.release()
             break
 
         # timer
         process_time = time.time() - begin_time
         if (process_time > 10):
-            cv2.destroyAllWindows
+            # cv2.destroyAllWindows
             cap.release()
             break
 
