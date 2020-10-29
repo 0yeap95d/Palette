@@ -8,5 +8,6 @@ urlpatterns = [
    path('statistics/', views.statistics),
    path('calendar/', views.calendar),
 
-   # path('/file', views.file),
+   path('save/', views.save),
+   path('question/', views.question),
 ]
