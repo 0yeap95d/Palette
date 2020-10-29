@@ -18,7 +18,7 @@ import sqlite3, datetime
 from keras.models import load_model
 from keras.preprocessing import image
 import tensorflow as tf
-from tensorflow import Graph, Session
+from tensorflow import Graph
 
 import json, pandas
 
