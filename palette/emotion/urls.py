@@ -7,4 +7,7 @@ urlpatterns = [
    path('top/', views.top),
    path('statistics/', views.statistics),
    path('calendar/', views.calendar),
+
+   path('save/', views.save),
+   path('question/', views.question),
 ]
