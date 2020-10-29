@@ -50,8 +50,8 @@ def updated(request):
 def checked(request):
     uName = request.body.decode('utf-8')
     name = json.loads(uName)
-    checkName = name['email']
-    user = User.objects.filter(email=checkName)
+    checkName = name['username']
+    user = User.objects.filter(username=checkName)
     if user:
         data = UserSerializer(user[0])
         return HttpResponse(data, status=200)
