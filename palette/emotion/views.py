@@ -147,6 +147,7 @@ def calendar(request):
 
 
 # 결과 저장하면서 그 결과 보내주기
+@csrf_exempt
 @api_view(['POST'])
 def save(request):
     #load model
