@@ -16,3 +16,8 @@ class Result(models.Model):
     moodType = models.IntegerField(blank=True, null=True)
     resultType = models.IntegerField(blank=True, null=True)
     content = models.CharField(max_length=100)
+
+class Question(models.Model):
+    moodType = models.IntegerField(blank=True, null=True)
+    question = models.CharField(max_length=150)
+

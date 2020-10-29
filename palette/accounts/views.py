@@ -50,29 +50,11 @@ def updated(request):
 def checked(request):
     uName = request.body.decode('utf-8')
     name = json.loads(uName)
-    checkName = name['username']
-    user = User.objects.filter(username=checkName)
+    checkName = name['email']
+    user = User.objects.filter(email=checkName)
     if user:
         data = UserSerializer(user[0])
         return HttpResponse(data, status=200)
 
     else:
         return HttpResponse(status=400)
-
-@csrf_exempt
-def initinfo(request, user_pk):
-
-    request = json.loads(request.body)
-
-    gender = request['gender']
-    age = int(request['age'])
-    nickname = request['nickname']
-
-    user = get_object_or_404(User, pk=user_pk)
-    user.nickname = nickname
-    user.gender = gender
-    user.age = age
-    user.save()
-
-    serializer = UserSerializer(user)
-    return JsonResponse(serializer.data)
