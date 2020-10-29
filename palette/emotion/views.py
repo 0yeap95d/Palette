@@ -148,6 +148,7 @@ def calendar(request):
 
 # 결과 저장하면서 그 결과 보내주기
 @api_view(['POST'])
+@csrf_exempt
 def save(request):
     #load model
     print(__file__)
@@ -211,7 +212,7 @@ def save(request):
 
         if cv2.waitKey(10) == ord('q'):
             # cv2.destroyAllWindows
-            cap.release()
+            # cap.release()q
             break
 
         # timer
@@ -283,6 +284,7 @@ def save(request):
 
 # 질문에 대한 대답받으면 그 감정에 맞는 질문 뱉어주기
 @api_view(['POST'])
+@csrf_exempt
 def question(request):
     # 대답하는 파일 받기
     pk = request.data.get('userNo')

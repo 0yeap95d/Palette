@@ -21,7 +21,6 @@ import tensorflow as tf
 from tensorflow import Graph
 
 import json, pandas
-
 @api_view(['GET'])
 def userinfo(request, user_pk):
     user = get_object_or_404(User, pk=user_pk)
@@ -58,3 +57,4 @@ def checked(request):
 
     else:
         return HttpResponse(status=400)
+
