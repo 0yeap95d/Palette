@@ -5,7 +5,7 @@ import {Button,RadioButton,TextInput} from 'react-native-paper';
 import { Picker } from "@react-native-community/picker";
 import axios from 'axios';
 
-export default function LoginScreen(props) {
+export default function JoinScreen(props) {
 
     const [loading, setLoading] = useState(false);  
     let [userId, setUserId] = useState('');

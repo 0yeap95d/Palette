@@ -8,7 +8,7 @@ import JoinScreen from './page/JoinScreen';  // 닉네임 성별 나이 기입
 // import InsertInfoScreen from './page/InsertInfoScreen'; // 닉네임, 성별, 나이 기입
 // import CallScreen from './page/CallScreen'; 
 import CameraScreen from './page/CameraScreen'; // 영상 & 음성
-// import ResultScreen from './page/ResultScreen'; // 결과 페이지
+import ResultScreen from './page/ResultScreen'; // 결과 페이지
 
 
 const Stack = createStackNavigator();
@@ -37,6 +37,11 @@ const App = () => {
           component={CameraScreen} 
           options={{headerShown: false}}
         />
+         <Stack.Screen 
+          name="Result" 
+          component={ResultScreen} 
+          options={{headerShown: false}}
+        />
         {/* <Stack.Screen 
           name="Info" 
           component={InsertInfoScreen} 
@@ -47,11 +52,7 @@ const App = () => {
           component={CallScreen} 
           options={{headerShown: false}}
         />
-        <Stack.Screen 
-          name="Result" 
-          component={ResultScreen} 
-          options={{headerShown: false}}
-        />   */}
+          */}
       </Stack.Navigator>
     </NavigationContainer>
   );
