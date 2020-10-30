@@ -10,4 +10,5 @@ urlpatterns = [
 
    path('save/', views.save),
    path('question/', views.question),
+   path('text/', views.text)
 ]
