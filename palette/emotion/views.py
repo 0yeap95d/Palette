@@ -391,8 +391,7 @@ def text(request):
     max_len = 30
 
     text = request.data.get('text')
-    emo = '슬픔'
-
+    emo = ''
     # stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
 
 
@@ -420,18 +419,26 @@ def text(request):
         print(score_index)
     #     print(loaded_model.predict(pad_new)[0])
         if(score_index == 0):
+            emo= '혐오'
             print("{:.2f}% 확률로 혐오 입니다.\n".format(score*100))
         elif(score_index == 1):
+            emo = '중립'
             print("{:.2f}% 확률로 중립 입니다.\n".format(score*100))
         elif(score_index == 2):
+            emo = '공포'
             print("{:.2f}% 확률로 공포 입니다.\n".format(score*100))
         elif(score_index == 3):
+            emo = '놀람'
             print("{:.2f}% 확률로 놀람 입니다.\n".format(score*100))
         elif(score_index == 4):
+            emo = '분노'
+            per = int(format(score*100))
             print("{:.2f}% 확률로 분노 입니다.\n".format(score*100))
         elif(score_index == 5):
+            emo = '슬픔'
             print("{:.2f}% 확률로 슬픔 입니다.\n".format(score*100))
         else:
+            emo = '행복'
             print("{:.2f}% 확률로 행복 입니다.\n".format(score*100))
             
     sentiment_predict(text)
@@ -441,5 +448,5 @@ def text(request):
 
     return Response({
         'text' : text,
-        'emo' : emo
+        'emo' : emo,
     })
