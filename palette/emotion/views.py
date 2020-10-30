@@ -375,14 +375,17 @@ def text(request):
     tokenizer.fit_on_texts(X_dialog)
     X_dialog = tokenizer.texts_to_sequences(X_dialog)
 
-    
+    # file = open('./models/aa.txt', 'w')
+    # file.write(X_dialog)   
+    # file.close()  
+    # print(X_dialog)
     okt = Okt()
-    tokenizer = Tokenizer()
+    # tokenizer = Tokenizer()
     max_len = 30
 
     text = request.data.get('text')
-    emo = "test"
-    stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
+    emo = ''
+    # stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
 
 
     loaded_model = load_model('./models/sentence_model.h5')
@@ -396,40 +399,31 @@ def text(request):
         score_index = np.where(loaded_model.predict(pad_new)[0] == score)[0][0]
     #     print(loaded_model.predict(pad_new)[0])
         if(score_index == 0):
-            emo = '혐오'
+            emo= '혐오'
             print("{:.2f}% 확률로 혐오 입니다.\n".format(score*100))
-            return emo
         elif(score_index == 1):
             emo = '중립'
             print("{:.2f}% 확률로 중립 입니다.\n".format(score*100))
-            return emo
         elif(score_index == 2):
             emo = '공포'
             print("{:.2f}% 확률로 공포 입니다.\n".format(score*100))
-            return emo
         elif(score_index == 3):
             emo = '놀람'
-            print(emo)
             print("{:.2f}% 확률로 놀람 입니다.\n".format(score*100))
-            return emo
         elif(score_index == 4):
             emo = '분노'
             print("{:.2f}% 확률로 분노 입니다.\n".format(score*100))
-            return emo
         elif(score_index == 5):
             emo = '슬픔'
             print("{:.2f}% 확률로 슬픔 입니다.\n".format(score*100))
-            return emo
         else:
             emo = '행복'
             print("{:.2f}% 확률로 행복 입니다.\n".format(score*100))
-            return emo
-    
-    
-       
+        return emo
     emo = sentiment_predict(text)
 
-    
+    print('------------------------------------------------------------------끝')
+
 
     return Response({
         'text' : text,
