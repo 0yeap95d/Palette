@@ -57,4 +57,3 @@ def checked(request):
 
     else:
         return HttpResponse(status=400)
-

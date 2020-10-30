@@ -15,7 +15,8 @@ from .serializers import EmotionSerializer, QuestionSerializer
 import sqlite3, datetime
 User = get_user_model()
 
-import json, pandas
+import json
+import pandas as pd
 import random
 import datetime
 from datetime import datetime
@@ -28,6 +29,14 @@ import numpy as np
 import logging
 import time
 
+# text
+import matplotlib.pyplot as plt
+import re
+import urllib.request
+from konlpy.tag import Okt
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import load_model
 # 검사결과(제일 최근결과) 높은 감정 3개
 @api_view(['GET'])
 def top(request):
@@ -321,3 +330,117 @@ def question(request):
         'que' : random_que.question
     })
 
+    
+@api_view(['POST'])
+@csrf_exempt
+def text(request):
+
+    dialog_data = pd.read_csv('./models/dialogSentence.csv')
+    dialog_data['Sentence'].nunique(), dialog_data['Emotion'].nunique()
+    dialog_data = dialog_data.dropna(subset=['Emotion'])
+    dialog_data['Sentence'] = dialog_data['Sentence'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","")
+    dialog_data['Sentence'].replace('', np.nan, inplace=True)
+    dialog_data = dialog_data.dropna(subset=['Sentence'])
+    stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
+    okt = Okt()
+
+    X_dialog = []
+    
+    for sentence in dialog_data['Sentence']:
+        temp_X = []
+        temp_X = okt.morphs(sentence, stem=True) # 토큰화
+        temp_X = [word for word in temp_X if not word in stopwords] # 불용어 제거
+        X_dialog.append(temp_X)
+    print(X_dialog)
+    tokenizer = Tokenizer()
+    tokenizer.fit_on_texts(X_dialog)
+
+    threshold = 3
+    total_cnt = len(tokenizer.word_index)  # 단어의 수
+    rare_cnt = 0  # 등장 빈도수가 threshold보다 작은 단어의 개수를 카운트
+    total_freq = 0  # 훈련 데이터의 전체 단어 빈도수 총 합
+    rare_freq = 0  # 등장 빈도수가 threshold보다 작은 단어의 등장 빈도수의 총 합
+
+    # 단어와 빈도수의 쌍(pair)을 key와 value로 받는다.
+    for key, value in tokenizer.word_counts.items():
+        total_freq = total_freq + value
+
+        # 단어의 등장 빈도수가 threshold보다 작으면
+        if (value < threshold):
+            rare_cnt = rare_cnt + 1
+            rare_freq = rare_freq + value
+
+    vocab_size = total_cnt - rare_cnt + 2
+    print('단어 집합의 크기 :',vocab_size)
+
+    tokenizer = Tokenizer(vocab_size, oov_token = 'OOV')
+    tokenizer.fit_on_texts(X_dialog)
+    X_dialog = tokenizer.texts_to_sequences(X_dialog)
+
+    # file = open('./models/aa.txt', 'w')
+    # file.write(X_dialog)   
+    # file.close()  
+    print('====================================================')
+    # print(X_dialog)
+    print('====================================================')
+    print(vocab_size)
+    print('====================================================')
+    print(tokenizer.texts_to_sequences('안녕 누구야'))
+    print('시------------------------------------------------------------------작')
+    okt = Okt()
+    # tokenizer = Tokenizer()
+    max_len = 30
+
+    text = request.data.get('text')
+    emo = '슬픔'
+
+    # stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
+
+
+    loaded_model = load_model('./models/sentence_model.h5')
+    print(loaded_model)
+    def sentiment_predict(new_sentence):
+        print('텍스트찍는다-----------------------------------')
+        print(new_sentence)
+        new_sentence = okt.morphs(new_sentence, stem=True) # 토큰화
+        print('토큰화----')
+        print(new_sentence)
+        new_sentence = [word for word in new_sentence if not word in stopwords] # 불용어 제거
+        print('불용어 제거----')
+        print(new_sentence)
+        encoded = tokenizer.texts_to_sequences([new_sentence]) # 정수 인코딩
+        print('정수 인코딩----')
+        print(encoded)
+        pad_new = pad_sequences(encoded, maxlen = max_len) # 패딩
+        score = max(loaded_model.predict(pad_new)[0]) # 예측
+        print('패딩----')
+        print(pad_new)
+        print(loaded_model.predict(pad_new))
+        print(score)
+        score_index = np.where(loaded_model.predict(pad_new)[0] == score)[0][0]
+        print(score_index)
+    #     print(loaded_model.predict(pad_new)[0])
+        if(score_index == 0):
+            print("{:.2f}% 확률로 혐오 입니다.\n".format(score*100))
+        elif(score_index == 1):
+            print("{:.2f}% 확률로 중립 입니다.\n".format(score*100))
+        elif(score_index == 2):
+            print("{:.2f}% 확률로 공포 입니다.\n".format(score*100))
+        elif(score_index == 3):
+            print("{:.2f}% 확률로 놀람 입니다.\n".format(score*100))
+        elif(score_index == 4):
+            print("{:.2f}% 확률로 분노 입니다.\n".format(score*100))
+        elif(score_index == 5):
+            print("{:.2f}% 확률로 슬픔 입니다.\n".format(score*100))
+        else:
+            print("{:.2f}% 확률로 행복 입니다.\n".format(score*100))
+            
+    sentiment_predict(text)
+
+    print('------------------------------------------------------------------끝')
+
+
+    return Response({
+        'text' : text,
+        'emo' : emo
+    })
