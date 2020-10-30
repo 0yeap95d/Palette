@@ -351,7 +351,7 @@ def text(request):
         temp_X = okt.morphs(sentence, stem=True) # 토큰화
         temp_X = [word for word in temp_X if not word in stopwords] # 불용어 제거
         X_dialog.append(temp_X)
-    print(X_dialog)
+    # print(X_dialog)
     tokenizer = Tokenizer()
     tokenizer.fit_on_texts(X_dialog)
 
