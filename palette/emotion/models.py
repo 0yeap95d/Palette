@@ -2,7 +2,8 @@ from django.db import models
 from django.conf import settings
 
 class Emotion(models.Model):
-    userNo = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='emotion')
+    userNo = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    option =  models.IntegerField(blank=True, null=True)
     mood1 = models.FloatField()
     mood2 = models.FloatField()
     mood3 = models.FloatField()

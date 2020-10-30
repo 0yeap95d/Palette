@@ -27,6 +27,7 @@ import cv2
 import numpy as np
 import logging
 import time
+
 # 검사결과(제일 최근결과) 높은 감정 3개
 @api_view(['GET'])
 def top(request):
@@ -149,7 +150,6 @@ def calendar(request):
 # 결과 저장하면서 그 결과 보내주기
 @csrf_exempt
 @api_view(['POST'])
-@csrf_exempt
 def save(request):
     #load model
     print(__file__)
