@@ -8,16 +8,19 @@ export default function LoginScreen(props) {
   const [loading, setLoading] = useState(false);
 
   const checkLogin = () => {
+    // AsyncStorage.setItem('userId','');
     console.log('-- 로그인 체크 -- ')
     setLoading(true);
     AsyncStorage.getItem('userId').then(id => {
         console.log('id');
         if(id){ // 로그인 한 적 있으면 카메라로 ㄱㄱ 
             setLoading(false);
+            console.log('로그인 기록 있음')
             props.navigation.push('Camera');
         } else {
             // 로그인 안했으면 로그인 페이지
             setLoading(false);
+            console.log('로그인 기록 없음');
             props.navigation.push('Login');
         }
     },[userId])

@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet,TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet,TouchableOpacity,Alert } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 
 export default function LoginScreen(props) {
-  const [userId, setUserId] = useState('');
-  const [userPw, setUserPw] = useState('');
+  let [userId, setUserId] = useState('');
+  let [userPw, setUserPw] = useState('');
 
     const goLogin = () =>{
         if(userId==''){
@@ -15,15 +15,28 @@ export default function LoginScreen(props) {
             Alert.alert('비밀번호를 입력하세요')
         }else {
             // axios login 
-            // axios.get("http://k3d102.p.ssafy.io:8000/accounts/login/")
-            // .then(res =>{
-            //     console.log(res)
-            //     setLogin(userId);
-            //     AsyncStorage.setItem('userId', '')
-            //     props.navigation.push('Camera');
-            // }).catch(err =>{
-            //     console.log(err)
-            // })
+          console.log('-- axios login --')
+          axios.post("http://k3d102.p.ssafy.io:8000/accounts/checked/",{
+             username : userId
+          })
+          .then( res =>{
+            axios.post("http://k3d102.p.ssafy.io:8000/accounts/user/login/",{
+                username : userId,
+                password : userPw
+            })
+            .then(res =>{
+                console.log(res)
+                setLogin(userId);
+                AsyncStorage.setItem('userId', '')
+                props.navigation.push('Camera');
+            }).catch(err =>{
+                console.log(err)
+                Alert.alert('비밀번호를 확인하세요')
+            })
+            }).catch(err=>{
+            console.log(err)
+            Alert.alert('존재하지 않는 아이디 입니다.');
+          })
         }
     }
     const goSignup = () =>{
@@ -45,7 +58,7 @@ export default function LoginScreen(props) {
         <View style={styles.inputView} >
           <TextInput  
             style={styles.inputText}
-            placeholder="Email..." 
+            placeholder="ID..." 
             placeholderTextColor="#003f5c"
             onChangeText={userId => setUserId(userId)}/>
         </View>
@@ -53,7 +66,7 @@ export default function LoginScreen(props) {
           <TextInput  
             secureTextEntry
             style={styles.inputText}
-            placeholder="Password..." 
+            placeholder="Pw..." 
             placeholderTextColor="#003f5c"
             onChangeText={userPw => setUserPw(userPw)}/>
         </View>
