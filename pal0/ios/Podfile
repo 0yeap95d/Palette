@@ -10,6 +10,8 @@ target 'pal0' do
 
   pod 'RNCPicker', :path => '../node_modules/@react-native-community/picker'
 
+  pod 'react-native-voice', :path => '../node_modules/react-native-voice'
+
   target 'pal0Tests' do
     inherit! :complete
     # Pods for testing
