@@ -37,6 +37,8 @@ from konlpy.tag import Okt
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import load_model
+
+from . import stt
 # 검사결과(제일 최근결과) 높은 감정 3개
 @api_view(['GET'])
 def top(request):
@@ -335,23 +337,8 @@ def question(request):
 @csrf_exempt
 def text(request):
 
-    dialog_data = pd.read_csv('./models/dialogSentence.csv')
-    dialog_data['Sentence'].nunique(), dialog_data['Emotion'].nunique()
-    dialog_data = dialog_data.dropna(subset=['Emotion'])
-    dialog_data['Sentence'] = dialog_data['Sentence'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","")
-    dialog_data['Sentence'].replace('', np.nan, inplace=True)
-    dialog_data = dialog_data.dropna(subset=['Sentence'])
     stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
-    okt = Okt()
-
-    X_dialog = []
-    
-    for sentence in dialog_data['Sentence']:
-        temp_X = []
-        temp_X = okt.morphs(sentence, stem=True) # 토큰화
-        temp_X = [word for word in temp_X if not word in stopwords] # 불용어 제거
-        X_dialog.append(temp_X)
-    # print(X_dialog)
+    X_dialog = stt.X_dialog
     tokenizer = Tokenizer()
     tokenizer.fit_on_texts(X_dialog)
 
@@ -376,18 +363,11 @@ def text(request):
     tokenizer.fit_on_texts(X_dialog)
     X_dialog = tokenizer.texts_to_sequences(X_dialog)
 
-    # file = open('./models/aa.txt', 'w')
-    # file.write(X_dialog)   
-    # file.close()  
-    # print(X_dialog)
     okt = Okt()
-    # tokenizer = Tokenizer()
     max_len = 30
 
     text = request.data.get('text')
     emo = ''
-    # stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
-
 
     loaded_model = load_model('./models/sentence_model.h5')
     print(loaded_model)
@@ -397,8 +377,8 @@ def text(request):
         encoded = tokenizer.texts_to_sequences([new_sentence]) # 정수 인코딩
         pad_new = pad_sequences(encoded, maxlen = max_len) # 패딩
         score = max(loaded_model.predict(pad_new)[0]) # 예측
+
         score_index = np.where(loaded_model.predict(pad_new)[0] == score)[0][0]
-    #     print(loaded_model.predict(pad_new)[0])
         if(score_index == 0):
             emo= '혐오'
             print("{:.2f}% 확률로 혐오 입니다.\n".format(score*100))
@@ -424,7 +404,6 @@ def text(request):
     emo = sentiment_predict(text)
 
     print('------------------------------------------------------------------끝')
-
 
     return Response({
         'text' : text,
