@@ -56,7 +56,7 @@ export default function JoinScreen(props) {
             .then(res=>{
                 console.log(res);
                 setLogin(userId);
-                props.navigation.push('Login');
+                props.navigation.push('Home');
             }).catch(err=>{
                 console.log(err)
                 Alert.alert('회원가입 중 문제가 발생했습니다.');
@@ -68,14 +68,14 @@ export default function JoinScreen(props) {
   };
 
   const setLogin = async (userId) =>{
-      console.log('로그인 유지 시키깅...');
-      try {
-        await AsyncStorage.setItem('userId', userId)
-      } catch (e) {
-        console.log(e)
-      }
-  }
-  
+    console.log('로그인 유지 시키깅...');
+    try {
+      await AsyncStorage.setItem('userId', userId)
+    } catch (e) {
+      console.log(e)
+    }
+    }
+
 
   return (
     <View style={styles.root}>

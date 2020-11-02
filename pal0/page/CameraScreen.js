@@ -5,6 +5,7 @@ import Voice from 'react-native-voice'
 import axios from 'axios';
 
 export default function CameraScreen(props) {
+  const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRecord,setIsRecord] = useState(false);
   const buttonLabel = isRecord ? 'Stop' : 'Start';
@@ -13,16 +14,25 @@ export default function CameraScreen(props) {
   let [errormsg, setError] = useState('');
   let [questions, setQuestions] = useState('오늘 어떠세요?');
   let answer = '';
+  let num = 1;
 
   const voiceLabel = isRecord
     ? '이야기를 듣는 중입니다' // say something 
     : errormsg; //press start button
+    
 
-  const userId = AsyncStorage.getItem('userId'); 
-
-  let num = 1;
+  const getUserId = async () =>{
+    try {
+      var id = await AsyncStorage.getItem('userId')
+      setUserId(id)
+      console.log(userId)
+    } catch (e) {
+      console.log(e)
+    }
+  }
 
   const _onSpeechStart = () => {
+    console.log(userId)
     console.log('--녹음 시작--');
     setError('');
   };
@@ -40,12 +50,12 @@ export default function CameraScreen(props) {
     console.log(answer);
 
     axios.post("http://k3d102.p.ssafy.io:8000/emotion/text/",{
-      answer : answer,
+      text : answer,
       username : userId
     })
     .then(res =>{
-        console.log(res)
-        setQuestions(res.data)
+        console.log(res.data.emo)
+        // setQuestions(res.data.emo)
     }).catch(err =>{
         console.log(err)
     })
@@ -72,6 +82,7 @@ export default function CameraScreen(props) {
   }
 
   useEffect(() => {
+    getUserId()
     Voice.onSpeechStart = _onSpeechStart;
     Voice.onSpeechEnd = _onSpeechEnd;
     Voice.onSpeechResults = _onSpeechResults;

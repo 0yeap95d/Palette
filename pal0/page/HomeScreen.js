@@ -6,14 +6,29 @@ export default function MainScreen(props) {
   const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
 
-  
+  const logout = async () =>{
+    console.log('로그아웃');
+    try {
+      await AsyncStorage.setItem('userId','')
+    } catch (e) {
+      console.log(e)
+    }
+    props.navigation.push('Main');
+  }
+
+  const goCamera = () =>{
+    props.navigation.push('Camera');
+  }
 
   return (
     <View style={styles.root}>
-        <Text>logout </Text>
+        <Text style={styles.logout}
+          onPress={logout}
+        >logout </Text>
 
         <View style={styles.content}>
           <TouchableOpacity style={styles.btns} 
+          onPress={goCamera}
           loading={loading}>
             <Image style={styles.btnimg} 
             source={require("../assets/img/camera.png")}/>
@@ -43,12 +58,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  logout:{
+    backgroundColor:'red',
+    width:60,
+    height:30,
+  },  
   content:{
     flex:1,
     justifyContent: 'center',
-    borderColor:'gray',
-    borderWidth:1,
-    borderRadius:30,
+    // borderColor:'gray',
+    // borderWidth:1,
+    // borderRadius:30,
     marginTop:20,
     marginBottom:20,
     padding:10,
@@ -62,11 +82,10 @@ const styles = StyleSheet.create({
     backgroundColor:'#ECEBF2',
     borderRadius:20,
     padding:10,
-
   },
   btnimg:{
     width:100,
-    height:80,
+    height:70,
     resizeMode:'contain',
     marginRight:30,
   },

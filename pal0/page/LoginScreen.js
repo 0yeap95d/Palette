@@ -27,8 +27,7 @@ export default function LoginScreen(props) {
             .then(res =>{
                 console.log(res)
                 setLogin(userId);
-                AsyncStorage.setItem('userId', '')
-                props.navigation.push('Camera');
+                props.navigation.push('Home');
             }).catch(err =>{
                 console.log(err)
                 Alert.alert('비밀번호를 확인하세요')
@@ -44,13 +43,13 @@ export default function LoginScreen(props) {
     }
 
     const setLogin = async (userId) =>{
-        console.log('로그인 유지 시키깅...');
-        try {
-          await AsyncStorage.setItem('userId', userId)
-        } catch (e) {
-          console.log(e)
-        }
-    }
+      console.log('로그인 유지 시키깅...');
+      try {
+        await AsyncStorage.setItem('userId', userId)
+      } catch (e) {
+        console.log(e)
+      }
+  }
 
   return (
     <View style={styles.root}>
