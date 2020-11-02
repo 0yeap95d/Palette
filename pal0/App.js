@@ -5,8 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import MainScreen from './page/MainScreen';  // 메인 로그인 버튼 
 import LoginScreen from './page/LoginScreen';  // 로그인
 import JoinScreen from './page/JoinScreen';  // 닉네임 성별 나이 기입 
-// import InsertInfoScreen from './page/InsertInfoScreen'; // 닉네임, 성별, 나이 기입
-// import CallScreen from './page/CallScreen'; 
+import HomeScreen from './page/HomeScreen';  // Home
 import CameraScreen from './page/CameraScreen'; // 영상 & 음성
 import ResultScreen from './page/ResultScreen'; // 결과 페이지
 
@@ -42,17 +41,12 @@ const App = () => {
           component={ResultScreen} 
           options={{headerShown: false}}
         />
-        {/* <Stack.Screen 
-          name="Info" 
-          component={InsertInfoScreen} 
+         <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
           options={{headerShown: false}}
         />
-        <Stack.Screen 
-          name="Call" 
-          component={CallScreen} 
-          options={{headerShown: false}}
-        />
-          */}
+     
       </Stack.Navigator>
     </NavigationContainer>
   );

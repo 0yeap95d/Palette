@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, ImageBackground,TouchableOpacity,Text} from 'react-native';
+import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 
 export default function MainScreen(props) {
@@ -7,7 +7,7 @@ export default function MainScreen(props) {
   const [loading, setLoading] = useState(false);
 
   const checkLogin = () => {
-    // AsyncStorage.setItem('userId','');
+    AsyncStorage.setItem('userId','');
     console.log('-- 로그인 체크 -- ')
     setLoading(true);
     AsyncStorage.getItem('userId').then(id => {
@@ -15,12 +15,12 @@ export default function MainScreen(props) {
         if(id){ // 로그인 한 적 있으면 카메라로 ㄱㄱ 
             setLoading(false);
             console.log('로그인 기록 있음')
-            props.navigation.push('Camera');
+            props.navigation.push('Home');
         } else {
             // 로그인 안했으면 로그인 페이지
             setLoading(false);
             console.log('로그인 기록 없음');
-            props.navigation.push('Login');
+            props.navigation.push('Home');
         }
     },[userId])
   };
@@ -34,15 +34,19 @@ export default function MainScreen(props) {
       resizeMode="cover"
       >
         <Text style={styles.logotxt}>Palette</Text>
+
+        <ImageBackground
+          style={styles.startbtn}
+          source={require("../assets/img/brush1.png")}
+        >
         <TouchableOpacity 
           onPress={checkLogin}
-          loading={loading}
-          style={styles.startbtn}>
+          loading={loading}>
           <Text style={styles.starttxt}>
             시작하기
           </Text>
         </TouchableOpacity>
-     
+      </ImageBackground>
       </ImageBackground>
     </View>
   );
@@ -69,16 +73,16 @@ const styles = StyleSheet.create({
   startbtn:{
     position:'absolute',
     bottom:0,
-    width:"70%",
-    backgroundColor:"#C8B6E5",
-    borderRadius:25,
-    height:50,
+    width:300,
+    height:80,
+    resizeMode:'stretch',
     alignItems:"center",
     justifyContent:"center",
-    marginBottom:40,
+    marginBottom:30,
   },
   starttxt : {
     color:'white',
+    fontSize:18,
     fontFamily : 'BMHANNAAir_ttf'
   }
 });
