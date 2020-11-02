@@ -365,11 +365,12 @@ def text(request):
     okt = Okt()
     max_len = 30
 
-    text = request.data.get('text')
+    txt = request.data.get('text')
     emo = ''
 
-    loaded_model = load_model('./models/sentence_model.h5')
-    print(loaded_model)
+    user = User.objects.all().filter(username=request.data.get('username'))
+    user = get_object_or_404(User, pk=user[0].pk)
+    loaded_model = load_model('./models/sentence_model2.h5')
     def sentiment_predict(new_sentence):
         new_sentence = okt.morphs(new_sentence, stem=True) # 토큰화
         new_sentence = [word for word in new_sentence if not word in stopwords] # 불용어 제거
@@ -399,12 +400,22 @@ def text(request):
         else:
             emo = '행복'
             print("{:.2f}% 확률로 행복 입니다.\n".format(score*100))
+        emotion = Emotion.objects.create(
+            userNo = user,
+            mood1 = round(loaded_model.predict(pad_new)[0][4]*100,2),    #angry
+            mood2 = round(loaded_model.predict(pad_new)[0][0]*100,2),    #disgust
+            mood3 = round(loaded_model.predict(pad_new)[0][2]*100,2),    #fear
+            mood4 = round(loaded_model.predict(pad_new)[0][6]*100,2),    #happy
+            mood5 = round(loaded_model.predict(pad_new)[0][5]*100,2),    #sad
+            mood6 = round(loaded_model.predict(pad_new)[0][3]*100,2),    #surprise
+            mood7 = round(loaded_model.predict(pad_new)[0][1]*100,2),    #neutral
+            option = 2
+        )
+        emotion.save()
         return emo
-    emo = sentiment_predict(text)
-
-    print('------------------------------------------------------------------끝')
+    emo = sentiment_predict(txt)
 
     return Response({
-        'text' : text,
+        'text' : txt,
         'emo' : emo,
     })

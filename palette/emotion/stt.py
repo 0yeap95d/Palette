@@ -11,6 +11,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 global X_dialog
 dialog_data = pd.read_csv('./models/dialogSentence.csv')
 dialog_data['Sentence'].nunique(), dialog_data['Emotion'].nunique()
+dialog_data.drop_duplicates(subset=['Sentence'], inplace=True) # converstion 열에서 중복인 내용이 있다면 중복 제거
 dialog_data = dialog_data.dropna(subset=['Emotion'])
 dialog_data['Sentence'] = dialog_data['Sentence'].str.replace("[^ㄱ-ㅎㅏ-ㅣ가-힣 ]","")
 dialog_data['Sentence'].replace('', np.nan, inplace=True)
