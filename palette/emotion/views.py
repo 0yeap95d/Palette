@@ -394,20 +394,52 @@ def text(request):
             else:
                 emo = '행복'
                 print("{:.2f}% 확률로 행복 입니다.\n".format(score*100))
+            mood1 = round(loaded_model.predict(pad_new)[0][4]*100,2)    #angry
+            mood2 = round(loaded_model.predict(pad_new)[0][0]*100,2)    #disgust
+            mood3 = round(loaded_model.predict(pad_new)[0][2]*100,2)    #fear
+            mood4 = round(loaded_model.predict(pad_new)[0][6]*100,2)    #happy
+            mood5 = round(loaded_model.predict(pad_new)[0][5]*100,2)    #sad
+            mood6 = round(loaded_model.predict(pad_new)[0][3]*100,2)    #surprise
+            mood7 = round(loaded_model.predict(pad_new)[0][1]*100,2)   #neutral
+
+
             emotion = Emotion.objects.create(
                 userNo = user,
-                mood1 = round(loaded_model.predict(pad_new)[0][4]*100,2),    #angry
-                mood2 = round(loaded_model.predict(pad_new)[0][0]*100,2),    #disgust
-                mood3 = round(loaded_model.predict(pad_new)[0][2]*100,2),    #fear
-                mood4 = round(loaded_model.predict(pad_new)[0][6]*100,2),    #happy
-                mood5 = round(loaded_model.predict(pad_new)[0][5]*100,2),    #sad
-                mood6 = round(loaded_model.predict(pad_new)[0][3]*100,2),    #surprise
-                mood7 = round(loaded_model.predict(pad_new)[0][1]*100,2),    #neutral
+                mood1 = mood1,
+                mood2 = mood2,
+                mood3 = mood3,
+                mood4 = mood4,
+                mood5 = mood5,
+                mood6 = mood6,
+                mood7 = mood7,
                 option = 2
             )
             emotion.save()
-            return emo
-        emo = sentiment_predict(txt)
-        return HttpResponse('success', status=200)
+            arr = []
+            arr.append(mood1)
+            arr.append(mood2)
+            arr.append(mood3)
+            arr.append(mood4)
+            arr.append(mood5)
+            arr.append(mood6)
+            arr.append(mood7)
+            arr2 = arr[:]
+            arr.sort(reverse=True)
+            idx = arr2.index(arr[0])    #  가장 높은 감정
+
+            # 해당 감정에 맞는 질문 랜덤으로 쏘기
+            ques = Question.objects.all().filter(moodType=idx+1,questionNo=request.data.get('questionNo'))
+            if ques:
+                cnt = ques.count()
+                random_index = int(random.random()*cnt)
+                random_que = ques[random_index] 
+                
+                return random_que.question
+            else:
+                return '질문이 존재하지 않습니다'
+        que = sentiment_predict(txt)
+        return Response({
+                    'que' : que
+                })
     else:
         return HttpResponse('noUser', status=400)
