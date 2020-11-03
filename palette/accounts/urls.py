@@ -10,4 +10,5 @@ urlpatterns = [
     path('checked/', views.checked, name='checked'),
     path('userinfo/<int:user_pk>/', views.userinfo, name='userinfo'),
     path('updated/', views.updated, name='updated'),
+    path('initinfo/<int:user_pk>/', views.initinfo, name='initinfo'),
 ]

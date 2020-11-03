@@ -184,12 +184,9 @@ def calendar(request):
 # 결과 저장하면서 그 결과 보내주기
 @api_view(['POST'])
 def save(request):
-    user = User.objects.all().filter(username=request.GET.get('username'))
+    user = User.objects.all().filter(username=request.data.get('username'))
     if user:
         #load model
-        print(__file__)
-        print(os.path.realpath(__file__))
-        print(os.path.abspath(__file__))
         model = model_from_json(open('./models/fer.json', 'r').read())
         #load weights
         model.load_weights('./models/fer.h5')
@@ -199,7 +196,7 @@ def save(request):
 
         emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
         emotionValues = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-
+        cnt = 0
         begin_time = time.time()
 
         while(cap.isOpened()):
@@ -229,6 +226,7 @@ def save(request):
 
                 # netural 감정이 최고값이 아닐때,
                 if (max_index != 6):
+                    cnt += 1
                     for i in range(len(emotions)):
                         emotionValues[i] += predictions[0][i]
                 else:
@@ -239,7 +237,6 @@ def save(request):
                 logging.warning(predicted_emotion)
                 logging.warning(max_value)
                 logging.warning(emotionValues)
-
                 cv2.putText(test_img, predicted_emotion + str(max_value) + "%", (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
 
             resized_img = cv2.resize(test_img, (1000, 700))
@@ -247,82 +244,33 @@ def save(request):
 
 
             if cv2.waitKey(10) == ord('q'):
-                # cv2.destroyAllWindows
-                # cap.release()q
                 break
 
             # timer
             process_time = time.time() - begin_time
             if (process_time > 10):
-                # cv2.destroyAllWindows
                 cap.release()
                 break
-
-        # cap.release()
-        # cv2.destroyAllWindows
-
+        print('cnt',cnt)
+        print('emotionValues',emotionValues)
         # 총 감정 분석해줄 영상 받기
         user = get_object_or_404(User, pk=user[0].pk)
-        mood1 = 10
-        mood2 = 5
-        mood3 = 20
-        mood4 = 5
-        mood5 = 30
-        mood6 = 0
-        mood7 = 30
         emotion = Emotion.objects.create(
             userNo = user,
-            mood1 = mood1,
-            mood2 = mood2,
-            mood3 = mood3,
-            mood4 = mood4,
-            mood5 = mood5,
-            mood6 = mood6,
-            mood7 = mood7,
+            mood1 = round(emotionValues[0]*100/cnt,2),
+            mood2 = round(emotionValues[1]*100/cnt,2),
+            mood3 = round(emotionValues[2]*100/cnt,2),
+            mood4 = round(emotionValues[3]*100/cnt,2),
+            mood5 = round(emotionValues[4]*100/cnt,2),
+            mood6 = round(emotionValues[5]*100/cnt,2),
+            mood7 = round(emotionValues[6]*100/cnt,2),
+            option = 1
         )
         emotion.save()
         
         return HttpResponse('success', status=200)
     else:
         return HttpResponse('noUser', status=400)
-
-# 질문에 대한 대답받으면 그 감정에 맞는 질문 뱉어주기
-@api_view(['POST'])
-@csrf_exempt
-def question(request):
-    # 대답하는 파일 받기
-    pk = request.data.get('userNo')
-    user = get_object_or_404(User, pk=pk)
-    mood1 = 10
-    mood2 = 5
-    mood3 = 30
-    mood4 = 5
-    mood5 = 20
-    mood6 = 0
-    mood7 = 30
-    
-    arr = []
-    arr.append(mood1)
-    arr.append(mood2)
-    arr.append(mood3)
-    arr.append(mood4)
-    arr.append(mood5)
-    arr.append(mood6)
-    arr.append(mood7)
-    arr2 = arr[:]
-    arr.sort(reverse=True)
-    idx = arr2.index(arr[0])    #  가장 높은 감정
-
-    # 해당 감정에 맞는 질문 랜덤으로 쏘기
-    ques = Question.objects.all()
-    cnt = Question.objects.all().filter(moodType=idx).count()
-    random_index = int(random.random()*cnt)
-    random_que = ques[random_index] 
-    
-    return Response({
-        'result' : cnt,
-        'que' : random_que.question
-    })
 
     
 @api_view(['POST'])
@@ -436,7 +384,7 @@ def text(request):
                 
                 return random_que.question
             else:
-                return '질문이 존재하지 않습니다'
+                return ''
         que = sentiment_predict(txt)
         return Response({
                     'que' : que
