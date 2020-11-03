@@ -57,3 +57,19 @@ def checked(request):
 
     else:
         return HttpResponse(status=400)
+
+@csrf_exempt
+def initinfo(request, user_pk):
+
+    request = json.loads(request.body)
+
+    gender = request['gender']
+    age = int(request['age'])
+
+    user = get_object_or_404(User, pk=user_pk)
+    user.gender = gender
+    user.age = age
+    user.init = 1
+    user.save()
+
+    return HttpResponse('success',status=200)
