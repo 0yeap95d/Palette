@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse, Http404
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
-from .models import Emotion, Question
+from .models import Emotion, Question, Result
 from .serializers import EmotionSerializer, QuestionSerializer
 
 import sqlite3, datetime
@@ -101,7 +101,7 @@ def statistics(request):
             time = (str)(date_str)
             time = int(time[11:13])/3
             accounts = User.objects.all().filter(gender=gender, age=age)
-            cnt = [0,0,0,0,0,0,0]
+            cnt = [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
             for ac in accounts:
                 emotions = Emotion.objects.all().filter(userNo=ac.pk)
                 for emo in emotions:
@@ -376,7 +376,7 @@ def text(request):
             idx = arr2.index(arr[0])    #  가장 높은 감정
 
             # 해당 감정에 맞는 질문 랜덤으로 쏘기
-            ques = Question.objects.all().filter(moodType=idx+1,questionNo=request.data.get('questionNo'))
+            ques = Question.objects.all().filter(questionNo=request.data.get('questionNo'))
             if ques:
                 cnt = ques.count()
                 random_index = int(random.random()*cnt)
@@ -389,5 +389,89 @@ def text(request):
         return Response({
                     'que' : que
                 })
+    else:
+        return HttpResponse('noUser', status=400)
+
+
+
+@api_view(['GET'])
+def result(request):
+    user = User.objects.all().filter(username=request.GET.get('username'))
+    if user:
+        emotion = Emotion.objects.all().filter(userNo=user[0].pk, option=2).order_by('-date')[:3]
+        cnt=[0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+        for emo in emotion:
+            cnt[0] += emo.mood1
+            cnt[1] += emo.mood2
+            cnt[2] += emo.mood3
+            cnt[3] += emo.mood4
+            cnt[4] += emo.mood5
+            cnt[5] += emo.mood6
+            cnt[6] += emo.mood7
+        emotion = Emotion.objects.all().filter(userNo=user[0].pk, option=1).order_by('-date')[:1]
+        cnt[0] = round((cnt[0]+ emotion[0].mood1)/4,2)
+        cnt[1] = round((cnt[1]+ emotion[0].mood2)/4,2)
+        cnt[2] = round((cnt[2]+ emotion[0].mood3)/4,2)
+        cnt[3] = round((cnt[3]+ emotion[0].mood4)/4,2)
+        cnt[4] = round((cnt[4]+ emotion[0].mood5)/4,2)
+        cnt[5] = round((cnt[5]+ emotion[0].mood6)/4,2)
+        cnt[6] = round((cnt[6]+ emotion[0].mood7)/4,2)
+        user = get_object_or_404(User, pk=user[0].pk)
+        emotion = Emotion.objects.create(
+            userNo = user,
+            mood1 = cnt[0],
+            mood2 = cnt[1],
+            mood3 = cnt[2],
+            mood4 = cnt[3],
+            mood5 = cnt[4],
+            mood6 = cnt[5],
+            mood7 = cnt[6],
+            option = 3
+        )
+        emotion.save()
+        arr = []
+        idx = []
+        per = []
+        arr.append(cnt[0])
+        arr.append(cnt[1])
+        arr.append(cnt[2])
+        arr.append(cnt[3])
+        arr.append(cnt[4])
+        arr.append(cnt[5])
+        arr.append(cnt[6])
+        
+        arr2 = arr[:]
+        arr.sort(reverse=True)
+        per.append(arr[0])
+        per.append(arr[1])
+        per.append(arr[2])
+        fr = arr2.index(arr[0])
+        se = arr2.index(arr[1])
+        th = arr2.index(arr[2])
+        if se==fr:
+            se = arr2.index(arr[1],fr+1,7)
+        if th==fr or th==se:
+            th = arr2.index(arr[2],se+1,7)
+        idx.append(fr)
+        idx.append(se)
+        idx.append(th)
+        emotion = [[idx[0],per[0]],[idx[1],per[1]],[idx[2],per[2]]]
+
+        music = Result.objects.all().filter(moodType=fr, resultType=1)
+        cnt = music.count()
+        random_index = int(random.random()*cnt)
+        random_music = music[random_index].content 
+        idx = random_music.index('/')
+        singer = random_music[:idx]
+        title = random_music[idx+1:]
+
+        tt = Result.objects.all().filter(moodType=fr, resultType=2)
+        cnt = tt.count()
+        random_index = int(random.random()*cnt)
+        random_text = tt[random_index].content
+        idx = random_text.index('-')
+        text = random_text[:idx]
+        where = random_text[idx+1:]
+        return Response({'emotions': emotion, 'text':[text,where], 'music':[singer,title]})
     else:
         return HttpResponse('noUser', status=400)

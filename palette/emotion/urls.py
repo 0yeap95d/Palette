@@ -9,5 +9,6 @@ urlpatterns = [
    path('calendar/', views.calendar),
 
    path('save/', views.save),
-   path('text/', views.text)
+   path('text/', views.text),
+   path('result/', views.result)
 ]
