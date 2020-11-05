@@ -149,7 +149,7 @@ def statistics(request):
 def calendar(request):
     user = User.objects.all().filter(username=request.GET.get('username'))
     if user:
-        emotion = Emotion.objects.all().filter(userNo=user[0].pk).order_by('date')
+        emotion = Emotion.objects.all().filter(userNo=user[0].pk, option=3).order_by('date')
         et=[]
         t = ''
         for emo in emotion:
