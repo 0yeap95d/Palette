@@ -4,25 +4,26 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Voice from 'react-native-voice'
 import axios from 'axios';
 
+
 export default function CameraScreen(props) {
+  const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
   const [isRecord,setIsRecord] = useState(false);
   const buttonLabel = isRecord ? 'Stop' : 'Start';
   let [Qcount, setCount] = useState(30);
   let [Qnum, setNum] = useState(1);
   let [errormsg, setError] = useState('');
-  let [questions, setQuestions] = useState('오늘 어떠세요?');
+  let [questions, setQuestions] = useState(`최근에는 어떠한 기분을 가지고 생활하셨는지${'\n'} 상세하게 설명해주세요`);
   let answer = '';
+  let num = 1;
 
   const voiceLabel = isRecord
     ? '이야기를 듣는 중입니다' // say something 
     : errormsg; //press start button
-
-  const userId = AsyncStorage.getItem('userId'); 
-
-  let num = 1;
+    
 
   const _onSpeechStart = () => {
+    console.log(userId)
     console.log('--녹음 시작--');
     setError('');
   };
@@ -31,21 +32,25 @@ export default function CameraScreen(props) {
   };
   const _onSpeechResults = (event) => {
     num = num +1;
-    setNum(num)
-    if(num>5){
+    if(num>3){
       goResult();
     }
     console.log('--녹음 결과--');
     answer = event.value[0]
     console.log(answer);
 
+    var sendnum = num;
+    console.log(sendnum)
     axios.post("http://k3d102.p.ssafy.io:8000/emotion/text/",{
-      answer : answer,
-      username : userId
+      text : answer,
+      username : userId,
+      questionNo : sendnum
     })
     .then(res =>{
-        console.log(res)
-        setQuestions(res.data)
+        console.log(res.data.que)
+        setQuestions(res.data.que)
+        setNum(num)
+
     }).catch(err =>{
         console.log(err)
     })
@@ -72,6 +77,19 @@ export default function CameraScreen(props) {
   }
 
   useEffect(() => {
+    if(userId==''){
+    setTimeout(async() => {
+      let userToken;
+      userToken = null;
+      try {
+        userToken = await AsyncStorage.getItem('userId');
+        setUserId(userToken)
+        console.log('카메라 페이지:'+userToken)
+      } catch(e) {
+        console.log(e);
+      }
+    }, 1000);
+    }
     Voice.onSpeechStart = _onSpeechStart;
     Voice.onSpeechEnd = _onSpeechEnd;
     Voice.onSpeechResults = _onSpeechResults;

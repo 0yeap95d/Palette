@@ -1,32 +1,35 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image} from 'react-native';
+import React, {Component, useState} from 'react';
+import {connect} from'react-redux';
+import ActionCreator from '../src/actions'
 import AsyncStorage from '@react-native-community/async-storage';
+import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image} from 'react-native';
 
-export default function MainScreen(props) {
-  const [userId, setUserId] = useState('');
-  const [loading, setLoading] = useState(false);
-
-  const checkLogin = () => {
-    AsyncStorage.setItem('userId','');
-    console.log('-- 로그인 체크 -- ')
-    setLoading(true);
-    AsyncStorage.getItem('userId').then(id => {
-        console.log('id');
-        if(id){ // 로그인 한 적 있으면 카메라로 ㄱㄱ 
-            setLoading(false);
-            console.log('로그인 기록 있음')
-            props.navigation.push('Home');
-        } else {
-            // 로그인 안했으면 로그인 페이지
-            setLoading(false);
-            console.log('로그인 기록 없음');
-            props.navigation.push('Home');
-        }
-    },[userId])
+export default function MainScreen(props){
+  const checkLogin= ()=>{
+    console.log('Main : 로그인 체크')
+    getUserId()
   };
-  
+  const getUserId = async ()=> {
+    console.log('Main: 유저아이디 체크')
+    try {
+      const id = await AsyncStorage.getItem('userId')
+      if(id){
+        console.log('Main : 로그인 기록 있음')
+        // this.props.setLogin(true)
+        props.navigation.push('Home');
+      }else {
+        console.log('Main : 로그인 기록 없음');
+        // this.props.setLogin(false)
+        props.navigation.push('Login');
+      }
+    } catch (e) {
+      console.log(e)
+    }
 
-  return (
+
+
+}
+    return (
     <View style={styles.root}>
       <ImageBackground 
       style={styles.content}
@@ -40,8 +43,7 @@ export default function MainScreen(props) {
           source={require("../assets/img/brush1.png")}
         >
         <TouchableOpacity 
-          onPress={checkLogin}
-          loading={loading}>
+          onPress={checkLogin}>
           <Text style={styles.starttxt}>
             시작하기
           </Text>
@@ -50,7 +52,9 @@ export default function MainScreen(props) {
       </ImageBackground>
     </View>
   );
+
 }
+
 
 const styles = StyleSheet.create({
   root: {
@@ -86,3 +90,9 @@ const styles = StyleSheet.create({
     fontFamily : 'BMHANNAAir_ttf'
   }
 });
+
+
+
+
+// export default connect(mapStateToProps,mapDispatchToProps)(MainScreen);
+// export default MainScreen;
