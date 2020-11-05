@@ -1,15 +1,18 @@
 import React, {useState} from 'react';
 import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import {AuthContext} from '../src/context'
 
 export default function MainScreen(props) {
   const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
+  const {signOut} = React.useContext(AuthContext);
 
   const logout = async () =>{
     console.log('로그아웃');
     try {
       await AsyncStorage.setItem('userId','')
+      signOut()
     } catch (e) {
       console.log(e)
     }

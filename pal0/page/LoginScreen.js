@@ -3,12 +3,16 @@ import { Text, View, StyleSheet,TouchableOpacity,Alert } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import {AuthContext} from '../src/context'
 
 export default function LoginScreen(props) {
   let [userId, setUserId] = useState('');
   let [userPw, setUserPw] = useState('');
 
+    const {signIn} = React.useContext(AuthContext);
+
     const goLogin = () =>{
+      console.log('로그인 버튼 !!')
         if(userId==''){
             Alert.alert('아이디를 입력하세요')
         }else if(userPw==''){
@@ -27,7 +31,6 @@ export default function LoginScreen(props) {
             .then(res =>{
                 console.log(res)
                 setLogin(userId);
-                props.navigation.push('Home');
             }).catch(err =>{
                 console.log(err)
                 Alert.alert('비밀번호를 확인하세요')
@@ -46,6 +49,8 @@ export default function LoginScreen(props) {
       console.log('로그인 유지 시키깅...');
       try {
         await AsyncStorage.setItem('userId', userId)
+        signIn(userId)
+        console.log('유저아이디'+userId)
       } catch (e) {
         console.log(e)
       }
@@ -58,6 +63,7 @@ export default function LoginScreen(props) {
           <TextInput  
             style={styles.inputText}
             placeholder="ID..." 
+            underlineColor='#ECEBF2'
             placeholderTextColor="#003f5c"
             onChangeText={userId => setUserId(userId)}/>
         </View>
@@ -66,6 +72,7 @@ export default function LoginScreen(props) {
             secureTextEntry
             style={styles.inputText}
             placeholder="Pw..." 
+            underlineColor='#ECEBF2'
             placeholderTextColor="#003f5c"
             onChangeText={userPw => setUserPw(userPw)}/>
         </View>
@@ -114,6 +121,8 @@ const styles = StyleSheet.create({
     backgroundColor:'transparent',
   },
   forgot:{
+    height:30,
+    width:40,
     color:"gray",
     fontSize:11,
     marginTop:10,
