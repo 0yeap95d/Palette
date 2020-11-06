@@ -475,3 +475,12 @@ def result(request):
         return Response({'emotions': emotion, 'text':[text,where], 'music':[singer,title]})
     else:
         return HttpResponse('noUser', status=400)
+
+
+@api_view(['GET'])
+def apk(request):
+    
+    context={
+        'img' : 'static/img/1.png'
+    }
+    return render(request, 'apk.html', context)
