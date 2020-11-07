@@ -25,9 +25,6 @@ export default function MainScreen(props){
     } catch (e) {
       console.log(e)
     }
-
-
-
 }
     return (
     <View style={styles.root}>

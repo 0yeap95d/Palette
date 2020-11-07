@@ -1,21 +1,24 @@
 import React, {useState,useEffect} from 'react';
-import {View, StyleSheet,TouchableOpacity,Text,Alert} from 'react-native';
+import {View, StyleSheet,TouchableOpacity,Text,Alert,ActivityIndicator} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Voice from 'react-native-voice'
 import axios from 'axios';
+import {AuthContext} from '../src/context'
 
 
 export default function CameraScreen(props) {
-  const [userId, setUserId] = useState('');
+  // const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isRecord,setIsRecord] = useState(false);
   const buttonLabel = isRecord ? 'Stop' : 'Start';
+  let getuserId = null;
   let [Qcount, setCount] = useState(30);
   let [Qnum, setNum] = useState(1);
   let [errormsg, setError] = useState('');
   let [questions, setQuestions] = useState(`최근에는 어떠한 기분을 가지고 생활하셨는지${'\n'} 상세하게 설명해주세요`);
   let answer = '';
   let num = 1;
+  const {goResult} = React.useContext(AuthContext);
 
   const voiceLabel = isRecord
     ? '이야기를 듣는 중입니다' // say something 
@@ -23,14 +26,15 @@ export default function CameraScreen(props) {
     
 
   const _onSpeechStart = () => {
-    console.log(userId)
     console.log('--녹음 시작--');
+    console.log(getuserId)
     setError('');
   };
   const _onSpeechEnd = () => {
     console.log('--녹음 끝--');
   };
   const _onSpeechResults = (event) => {
+    setLoading(true)
     num = num +1;
     if(num>3){
       goResult();
@@ -40,16 +44,17 @@ export default function CameraScreen(props) {
     console.log(answer);
 
     var sendnum = num;
-    console.log(sendnum)
+    console.log('질문'+sendnum+'유저아이디'+getuserId)
     axios.post("http://k3d102.p.ssafy.io:8000/emotion/text/",{
       text : answer,
-      username : userId,
+      username : getuserId,
       questionNo : sendnum
     })
     .then(res =>{
         console.log(res.data.que)
         setQuestions(res.data.que)
         setNum(num)
+        setLoading(false)
 
     }).catch(err =>{
         console.log(err)
@@ -72,19 +77,15 @@ export default function CameraScreen(props) {
     setIsRecord(!isRecord);
   };
 
-  const goResult = () =>{
-    props.navigation.push('Result');
-  }
+  
 
   useEffect(() => {
-    if(userId==''){
+    if(getuserId==null){
     setTimeout(async() => {
-      let userToken;
-      userToken = null;
       try {
-        userToken = await AsyncStorage.getItem('userId');
-        setUserId(userToken)
-        console.log('카메라 페이지:'+userToken)
+        getuserId = await AsyncStorage.getItem('userId');
+        console.log('카메라 페이지:'+getuserId)
+        // setUserId(getuserId)
       } catch(e) {
         console.log(e);
       }
@@ -106,21 +107,32 @@ export default function CameraScreen(props) {
       </View>
 
       <View style={styles.message}>
-        <View style={styles.btns}>
-          <Text style={styles.txt}>Q{Qnum}.</Text>
-          <Text style={styles.txt}>{questions}</Text>
 
-          {/* <Text style={styles.txt}>⏱:{Qcount}</Text> */}
-        </View>
-
-        <View style={styles.btns}>
-          <TouchableOpacity 
-          style={styles.nextBtn}
-          onPress={_onRecordVoice}
-          >
-          <Text style={styles.txt}>{buttonLabel}</Text>
-          </TouchableOpacity>
-        </View>
+        {
+          loading?
+          (
+            <>
+            <ActivityIndicator size="large"/>
+            </>
+          ):
+          (
+            <>
+            <View style={styles.btns}>
+              <Text style={styles.txt}>Q{Qnum}.</Text>
+              <Text style={styles.txt}>{questions}</Text>
+            {/* <Text style={styles.txt}>⏱:{Qcount}</Text> */}
+            </View>
+            <View style={styles.btns}>
+              <TouchableOpacity 
+              style={styles.nextBtn}
+              onPress={_onRecordVoice}
+              >
+              <Text style={styles.txt}>{buttonLabel}</Text>
+              </TouchableOpacity>
+          </View>
+          </>
+          )
+        }
 
         <Text style={styles.txt}>{voiceLabel}</Text>
 
