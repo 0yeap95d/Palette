@@ -6,7 +6,7 @@ import {AuthContext} from '../src/context'
 export default function MainScreen(props) {
   const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
-  const {signOut} = React.useContext(AuthContext);
+  const {signOut,goResult} = React.useContext(AuthContext);
 
   const logout = async () =>{
     console.log('로그아웃');
@@ -20,7 +20,8 @@ export default function MainScreen(props) {
   }
 
   const goCamera = () =>{
-    props.navigation.push('Camera');
+    // goResult()
+    props.navigation.push('Result');
   }
 
   return (

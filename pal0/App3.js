@@ -1,10 +1,10 @@
-import React, { useEffect, useState,View } from 'react';
-import { ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {AuthContext} from './src/context'
-
+import LottieView from 'lottie-react-native';
 
 import MainScreen from './page/MainScreen';  // 메인 로그인 버튼 
 import LoginScreen from './page/LoginScreen';  // 로그인
@@ -12,6 +12,7 @@ import JoinScreen from './page/JoinScreen';  // 닉네임 성별 나이 기입
 import HomeScreen from './page/HomeScreen';  // Home
 import CameraScreen from './page/CameraScreen'; // 영상 & 음성
 import ResultScreen from './page/ResultScreen'; // 결과 페이지
+import OnboardingScreen from './page/OnboardingScreen'; // 결과 페이지
 
 
 
@@ -19,18 +20,26 @@ import ResultScreen from './page/ResultScreen'; // 결과 페이지
 const userStack  = createStackNavigator();
 const UserStackScreen = () => (
     <userStack.Navigator>
-        <userStack.Screen name="Main" component={MainScreen} options={{headerShown: false}} />
+        {/* <userStack.Screen name="Main" component={MainScreen} options={{headerShown: false}} /> */}
         <userStack.Screen name="Home" component={HomeScreen} options={{headerShown: false}}/>
         <userStack.Screen name="Camera" component={CameraScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="Result" component={ResultScreen} options={{headerShown: false}}/>
     </userStack.Navigator>
 );
+
+const boardStack = createStackNavigator();
+const OnBoardStackScreen = () => (
+  <boardStack.Navigator>
+        <boardStack.Screen name="Onboard" component={OnboardingScreen} options={{headerShown: false}} />
+  </boardStack.Navigator>
+)
 
 const loginStack = createStackNavigator();
 const LoginStackScreen = () => (
     <loginStack.Navigator>
-        <loginStack.Screen name="Main" component={MainScreen} />
-        <loginStack.Screen name="Join" component={JoinScreen} options={{headerShown: false}}/>
+        {/* <loginStack.Screen name="Main" component={MainScreen} /> */}
         <loginStack.Screen name="Login" component={LoginScreen} options={{headerShown: false}}/>
+        <loginStack.Screen name="Join" component={JoinScreen} options={{headerShown: false}}/>
     </loginStack.Navigator>
 );
 
@@ -47,6 +56,8 @@ const App = () => {
         isLoading: true,
         userName: null,
         userToken: null,
+        resultToken : false,
+        onBoard: true
       };
 
       const loginReducer = (prevState, action) => {
@@ -71,18 +82,32 @@ const App = () => {
               userToken: null,
               isLoading: false,
             };
-          case 'REGISTER': 
+          case 'GO_RESULT' :
             return {
               ...prevState,
-              userName: action.id,
-              userToken: action.token,
-              isLoading: false,
+              resultToken: true,
             };
+          case 'EXIT_RESULT' :
+            return {
+              ...prevState,
+              resultToken: false,
+            };
+          case 'GETBOARD' :
+            return {
+              ...prevState,
+              isLoading:false
+            }
+          case 'ONBOARD' : 
+          return {
+            ...prevState,
+            onBoard:false,
+            // isLoading:true
+          }  
         }
       };
 
       const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
-    
+
       const authContext = React.useMemo(()=>({
         signIn : async (foundUser) =>{
             console.log(foundUser)
@@ -105,47 +130,100 @@ const App = () => {
               }
               dispatch({ type: 'LOGOUT' });
         },
-        signUp: () =>{
-
+        goResult : () =>{
+          console.log('결과 페이지 가기')
+          dispatch({ type :'GO_RESULT'})
+        },
+        exitResult : () => {
+          console.log('결과 페이지 나가기')
+          dispatch({ type :'EXIT_RESULT'})
+        },
+        welcome : () => {
+          console.log('보드 끄기')
+          dispatch({type:'ONBOARD'})
+          setTimeout(async() => {
+            let userToken =null;
+            try {
+              userToken = await AsyncStorage.getItem('userId');
+              await AsyncStorage.setItem('boardToken','off');
+            } catch(e) {
+              console.log(e);
+            }
+            dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
+          console.log('main')
+        }, 1000);
         }
     }));
 
-    useEffect(() => {
+    const getUser = () =>{
+      dispatch({type:'ONBOARD'})
         setTimeout(async() => {
-          // setIsLoading(false);
-          let userToken;
-          userToken = null;
+          let userToken = null;
           try {
             userToken = await AsyncStorage.getItem('userId');
             console.log('여긴 app3:'+userToken)
           } catch(e) {
             console.log(e);
           }
-          // console.log('user token: ', userToken);
           dispatch({ type: 'RETRIEVE_TOKEN', token: userToken });
-        }, 1000);
-      }, []);
+      }, 1000);
+    }
+
+    useEffect(() => {
+       AsyncStorage.setItem('userId', 'iii')
+      //  AsyncStorage.removeItem('boardToken');
+      let isFirstLaunch = true;
+      setTimeout(async() => {
+        let boardToken = null;
+        try {
+        boardToken = await AsyncStorage.getItem('boardToken')
+        console.log('보드 토큰'+boardToken)
+        boardToken=='off' ? (getUser()) : dispatch({type:'GETBOARD'})
+        }catch (e){}
+      }, 1000);
+
+    }, []);
 
 
-    // if( loginState.isLoading ) {
-    //     return(
-    //     <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-    //         <ActivityIndicator size="large"/>
-    //     </View>
-    //     );
-    // }
-
+    if(loginState.isLoading) {
+      return (
+        <View style={{flex:1,justifyContetn:'center',alignItems:'center'}}>
+          {/* <ActivityIndicator size ="large"/>      
+        <LottieView 
+        style={{}}
+        source={require('./assets/img/loader1.json')} autoPlay roof/> */}
+        <ImageBackground 
+        style = {{width:'100%',height:'100%',alignItems: "center",}}
+        source={require("./assets/img/main.png")}
+        resizeMode="cover"
+        >
+        <Text style={{height: 70,
+        marginTop:40,
+        alignItems: "center",
+        fontSize: 60,
+        fontFamily : "Golden Plains"}}>Palette</Text>
+        </ImageBackground>
+        </View>
+      );
+    }
+  
+    
     return (
         <AuthContext.Provider value={authContext}>
             <NavigationContainer>
                 {
                     loginState.userToken !== null ? (
-                        <UserStackScreen/>
+                        loginState.resultToken ?(<ResultStackScreen/>):(<UserStackScreen/>)
                         ) :
-                        <LoginStackScreen/>
+                        (
+                          loginState.onBoard? (<OnBoardStackScreen/>): (<LoginStackScreen/>)
+                        )
                 }
             </NavigationContainer>
         </AuthContext.Provider>
     );
+
+    
 }
+
 export default App;
