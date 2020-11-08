@@ -4,8 +4,10 @@ from . import views
 app_name = 'emotion'
 
 urlpatterns = [
-   path('top/', views.top),
-   path('statistics/', views.statistics),
+   path('total/', views.total),
+   path('searchage/', views.searchage),
+   path('searchtime/', views.searchtime),
+   
    path('calendar/', views.calendar),
 
    path('save/', views.save),
