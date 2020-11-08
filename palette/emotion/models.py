@@ -22,3 +22,11 @@ class Question(models.Model):
     questionNo = models.IntegerField(blank=True, null=True)
     question = models.CharField(max_length=150)
 
+class Final(models.Model):
+    userNo = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    moodType = models.IntegerField(blank=True, null=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+class Qr(models.Model):
+    userNo = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)

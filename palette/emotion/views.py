@@ -9,9 +9,9 @@ from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse, Http404
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
-from .models import Emotion, Question, Result
+from .models import Emotion, Question, Result, Final
 from .serializers import EmotionSerializer, QuestionSerializer
-
+import operator
 import sqlite3, datetime
 User = get_user_model()
 
@@ -39,110 +39,98 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import load_model
 
 from . import stt
-# 검사결과(제일 최근결과) 높은 감정 3개
-@api_view(['GET'])      # username, option 
-def top(request):
-    user = User.objects.all().filter(username=request.GET.get('username'))
-    if user:
-        option = request.GET.get('option')
-        emotion = Emotion.objects.all().filter(userNo=user[0].pk, option=option).order_by('-date')[:1]
-        if emotion:
-            per = []
-            idx = []
-            for emo in emotion:
-                arr = []
-                arr.append(emo.mood1)
-                arr.append(emo.mood2)
-                arr.append(emo.mood3)
-                arr.append(emo.mood4)
-                arr.append(emo.mood5)
-                arr.append(emo.mood6)
-                arr.append(emo.mood7)
-                arr2 = arr[:]
-                arr.sort(reverse=True)
-                per.append(arr[0])
-                per.append(arr[1])
-                per.append(arr[2])
-                fr = arr2.index(arr[0])
-                se = arr2.index(arr[1])
-                th = arr2.index(arr[2])
-                if se==fr:
-                    se = arr2.index(arr[1],fr+1,7)
-                if th==fr or th==se:
-                    th = arr2.index(arr[2],se+1,7)
-                idx.append(fr)
-                idx.append(se)
-                idx.append(th)
-                
-            result = [[idx[0],per[0]],[idx[1],per[1]],[idx[2],per[2]]]
-            
-            return Response({
-                'result' : result
-            })
-        else:
-            return Response({
-                'result' : '기록이 존재하지 않습니다'
-            })
-    else:
-        return HttpResponse('noUser', status=400)
 
-# 성별, 연령대, 시간으로 통계낸 감정 순위 3개       username, option
 @api_view(['GET'])
-def statistics(request):
-    user = User.objects.all().filter(username=request.GET.get('username'))
-    if user:
-        option = request.GET.get('option')
-        emotion = Emotion.objects.all().filter(userNo=user[0].pk,option=option).order_by('-date')[:1]
-        if emotion:
-            gender = user[0].gender
-            age = user[0].age
-            time = emotion[0].date
-            date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-            time = (str)(date_str)
-            time = int(time[11:13])/3
-            accounts = User.objects.all().filter(gender=gender, age=age)
-            cnt = [0.0,0.0,0.0,0.0,0.0,0.0,0.0]
-            for ac in accounts:
-                emotions = Emotion.objects.all().filter(userNo=ac.pk)
-                for emo in emotions:
-                    tm = emo.date
-                    tm = (str)(tm.strftime("%Y-%m-%d %H:%M:%S"))
-                    tm = int(tm[11:13])/3
-                    if int(time)!=int(tm):
-                        continue
-                    arr = []
-                    arr.append(emo.mood1)
-                    arr.append(emo.mood2)
-                    arr.append(emo.mood3)
-                    arr.append(emo.mood4)
-                    arr.append(emo.mood5)
-                    arr.append(emo.mood6)
-                    arr.append(emo.mood7)
-                    arr2 = arr[:]
-                    arr.sort(reverse=True)
-                    cnt[arr2.index(arr[0])] += 1
-            cnt2 = cnt[:]
-            cnt2.sort(reverse=True)
-            fr = cnt.index(cnt2[0])
-            se = cnt.index(cnt2[1])
-            th = cnt.index(cnt2[2])
-            if se==fr:
-                se = cnt.index(cnt2[1],fr+1,7)
-            if th==fr or th==se:
-                th = cnt.index(cnt2[2],se+1,7)
-            idx = [fr,se,th]
-            return Response({
-                'idx' : idx,
-                'age' : age,
-                'gneder' : gender,
-                'time' : int(time)
-                })
-        else:
-            return Response({
-                'result' : '기록이 존재하지 않습니다'
-            })
-    else:
-        return HttpResponse('noUser', status=400)
+def total(request):
+    man = User.objects.all().filter(gender=1)
+    woman = User.objects.all().filter(gender=2)
+
+    marr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
+    for ac in man:
+        emotions = Final.objects.all().filter(userNo=ac.pk)
+        for emo in emotions:
+            marr[emo.moodType-1][1]+=1
+
+    marr.sort(key=lambda x:x[1],reverse=True)
+    man=({
+        'one' : marr[0],
+        'two' : marr[1],
+        'three' : marr[2],
+        'four' : marr[3],
+        'five' : marr[4],
+    })
+
+    warr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
+    for ac in woman:
+        emotions = Final.objects.all().filter(userNo=ac.pk)
+        for emo in emotions:
+            warr[emo.moodType-1][1]+=1
+
+    warr.sort(key=lambda x:x[1],reverse=True)
+    woman=({
+        'one' : warr[0],
+        'two' : warr[1],
+        'three' : warr[2],
+        'four' : warr[3],
+        'five' : warr[4],
+    })
+    return Response({
+        'man' : man,
+        'woman' : woman
+    })
+
+@api_view(['GET'])
+def searchage(request):
+    age=request.GET.get('age')
+    account = User.objects.all().filter(age=age)
+
+    arr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
+    for ac in account:
+        emotions = Final.objects.all().filter(userNo=ac.pk)
+        for emo in emotions:
+            arr[emo.moodType-1][1]+=1
+
+    arr.sort(key=lambda x:x[1],reverse=True)
+    sta=({
+        'one' : arr[0],
+        'two' : arr[1],
+        'three' : arr[2],
+        'four' : arr[3],
+        'five' : arr[4],
+    })
+    return Response({
+        'age' : age,
+        'statistic' : sta
+    })
+
+@api_view(['GET'])
+def searchtime(request):
+    tm=request.GET.get('time')
+    arr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
+    
+    emotions = Final.objects.all()
+    for emo in emotions:
+        time = emo.date
+        date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+        time = (str)(date_str)
+        time = int(time[11:13])/3
+        time = int(time)
+        if(int(time)!=int(tm)):
+            continue
+        arr[emo.moodType-1][1]+=1
+
+    arr.sort(key=lambda x:x[1],reverse=True)
+    sta=({
+        'one' : arr[0],
+        'two' : arr[1],
+        'three' : arr[2],
+        'four' : arr[3],
+        'five' : arr[4],
+    })
+    return Response({
+        'time' : tm,
+        'statistic' : sta
+    })
 
 # 검사결과 일마다 날짜마다 결과     username
 @api_view(['GET'])
@@ -186,84 +174,96 @@ def calendar(request):
 def save(request):
     user = User.objects.all().filter(username=request.data.get('username'))
     if user:
-        #load model
-        model = model_from_json(open('./models/fer.json', 'r').read())
-        #load weights
-        model.load_weights('./models/fer.h5')
-        face_haar_cascade = cv2.CascadeClassifier('./models/haarcascade_frontalface_default.xml')
 
-        cap=cv2.VideoCapture('./models/baby.mp4')
+        # #load model
+        # model = model_from_json(open('./models/fer.json', 'r').read())
+        # #load weights
+        # model.load_weights('./models/fer.h5')
+        # face_haar_cascade = cv2.CascadeClassifier('./models/haarcascade_frontalface_default.xml')
 
-        emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
-        emotionValues = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        cnt = 0
-        begin_time = time.time()
+        # cap=cv2.VideoCapture('./models/baby.mp4')
 
-        while(cap.isOpened()):
+        # emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
+        # emotionValues = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        # cnt = 0
+        # begin_time = time.time()
 
-            ret,test_img=cap.read()# captures frame and returns boolean value and captured image
-            if not ret:
-                continue
-            gray_img= cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
+        # while(cap.isOpened()):
 
-            faces_detected = face_haar_cascade.detectMultiScale(gray_img, 1.32, 5)
+        #     ret,test_img=cap.read()# captures frame and returns boolean value and captured image
+        #     if not ret:
+        #         continue
+        #     gray_img= cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
 
-
-            for (x,y,w,h) in faces_detected:
-                cv2.rectangle(test_img,(x,y),(x+w,y+h),(255,0,0),thickness=7)
-                roi_gray=gray_img[y:y+w,x:x+h]#cropping region of interest i.e. face area from  image
-                roi_gray=cv2.resize(roi_gray,(48,48))
-                img_pixels = image.img_to_array(roi_gray)
-                img_pixels = np.expand_dims(img_pixels, axis = 0)
-                img_pixels /= 255
-
-                predictions = model.predict(img_pixels)
-
-                #find max indexed array
-                max_index = np.argmax(predictions[0])
-                max_value = np.max(predictions[0])
+        #     faces_detected = face_haar_cascade.detectMultiScale(gray_img, 1.32, 5)
 
 
-                # netural 감정이 최고값이 아닐때,
-                if (max_index != 6):
-                    cnt += 1
-                    for i in range(len(emotions)):
-                        emotionValues[i] += predictions[0][i]
-                else:
-                    logging.warning("except neutral")
+        #     for (x,y,w,h) in faces_detected:
+        #         cv2.rectangle(test_img,(x,y),(x+w,y+h),(255,0,0),thickness=7)
+        #         roi_gray=gray_img[y:y+w,x:x+h]#cropping region of interest i.e. face area from  image
+        #         roi_gray=cv2.resize(roi_gray,(48,48))
+        #         img_pixels = image.img_to_array(roi_gray)
+        #         img_pixels = np.expand_dims(img_pixels, axis = 0)
+        #         img_pixels /= 255
 
-                predicted_emotion = emotions[max_index]
+        #         predictions = model.predict(img_pixels)
 
-                logging.warning(predicted_emotion)
-                logging.warning(max_value)
-                logging.warning(emotionValues)
-                cv2.putText(test_img, predicted_emotion + str(max_value) + "%", (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
-
-            resized_img = cv2.resize(test_img, (1000, 700))
-            cv2.imshow('Facial emotion analysis ',resized_img)
+        #         #find max indexed array
+        #         max_index = np.argmax(predictions[0])
+        #         max_value = np.max(predictions[0])
 
 
-            if cv2.waitKey(10) == ord('q'):
-                break
+        #         # netural 감정이 최고값이 아닐때,
+        #         if (max_index != 6):
+        #             cnt += 1
+        #             for i in range(len(emotions)):
+        #                 emotionValues[i] += predictions[0][i]
+        #         else:
+        #             logging.warning("except neutral")
 
-            # timer
-            process_time = time.time() - begin_time
-            if (process_time > 10):
-                cap.release()
-                break
-        print('cnt',cnt)
-        print('emotionValues',emotionValues)
+        #         predicted_emotion = emotions[max_index]
+
+        #         logging.warning(predicted_emotion)
+        #         logging.warning(max_value)
+        #         logging.warning(emotionValues)
+        #         cv2.putText(test_img, predicted_emotion + str(max_value) + "%", (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+
+        #     resized_img = cv2.resize(test_img, (1000, 700))
+        #     cv2.imshow('Facial emotion analysis ',resized_img)
+
+
+        #     if cv2.waitKey(10) == ord('q'):
+        #         break
+
+        #     # timer
+        #     process_time = time.time() - begin_time
+        #     if (process_time > 10):
+        #         cap.release()
+        #         break
+        # print('cnt',cnt)
+        # print('emotionValues',emotionValues)
         # 총 감정 분석해줄 영상 받기
         user = get_object_or_404(User, pk=user[0].pk)
+        # emotion = Emotion.objects.create(
+        #     userNo = user,
+        #     mood1 = round(emotionValues[0]*100/cnt,2),
+        #     mood2 = round(emotionValues[1]*100/cnt,2),
+        #     mood3 = round(emotionValues[2]*100/cnt,2),
+        #     mood4 = round(emotionValues[3]*100/cnt,2),
+        #     mood5 = round(emotionValues[4]*100/cnt,2),
+        #     mood6 = round(emotionValues[5]*100/cnt,2),
+        #     mood7 = round(emotionValues[6]*100/cnt,2),
+        #     option = 1
+        # )
         emotion = Emotion.objects.create(
             userNo = user,
-            mood1 = round(emotionValues[0]*100/cnt,2),
-            mood2 = round(emotionValues[1]*100/cnt,2),
-            mood3 = round(emotionValues[2]*100/cnt,2),
-            mood4 = round(emotionValues[3]*100/cnt,2),
-            mood5 = round(emotionValues[4]*100/cnt,2),
-            mood6 = round(emotionValues[5]*100/cnt,2),
-            mood7 = round(emotionValues[6]*100/cnt,2),
+            mood1 = 10,
+            mood2 = 20,
+            mood3 = 11,
+            mood4 = 13,
+            mood5 = 15,
+            mood6 = 11,
+            mood7 = 20,
             option = 1
         )
         emotion.save()
@@ -455,16 +455,157 @@ def result(request):
         idx.append(fr)
         idx.append(se)
         idx.append(th)
-        emotion = [[idx[0],per[0]],[idx[1],per[1]],[idx[2],per[2]]]
+        emotion = ({
+            'first' : [idx[0],per[0]],
+            'second' : [idx[1],per[1]],
+            'third' : [idx[2],per[2]]
+        })
+        finalEmo = 0
+        ##################### 2차 감정 ################################
+        if(fr==0):
+            if(se==1):
+                finalEmo=1
+            if(se==2):
+                finalEmo=2
+            if(se==3):
+                finalEmo=3
+            if(se==4):
+                finalEmo=4
+            if(se==5):
+                finalEmo=5
+            if(se==6):
+                finalEmo=6
+        if(fr==1):
+            if(se==2):
+                finalEmo=7
+            if(se==3):
+                finalEmo=8
+            if(se==4):
+                finalEmo=9
+            if(se==5):
+                finalEmo=10
+            if(se==6):
+                finalEmo=11
+        if(fr==2):
+            if(se==3):
+                finalEmo=12
+            if(se==4):
+                finalEmo=13
+            if(se==5):
+                finalEmo=14
+            if(se==6):
+                finalEmo=15
+        if(fr==3):
+            if(se==4):
+                finalEmo=16
+            if(se==5):
+                finalEmo=17
+            if(se==6):
+                finalEmo=18
+        if(fr==4):
+            if(se==5):
+                finalEmo=19
+            if(se==6):
+                finalEmo=20
+        if(fr==5):
+            if(se==6):
+                finalEmo=21    
+            
+        final = Final.objects.create(
+            userNo = user,
+            moodType = finalEmo
+        )
+        final.save()
+        ##################### 2차 감정 ################################
 
+        ##################### 통계 ####################################
+        user = User.objects.all().filter(username=request.GET.get('username'))
+        stEm = Final.objects.all().filter(userNo=user[0].pk).order_by('-date')[:1]
+        statistic = ({
+            'idx' : -1,
+            'age' : 1,
+            'gneder' : 0,
+            'time' : 0
+        })
+        if stEm:
+            gender = user[0].gender
+            age = user[0].age
+            time = stEm[0].date
+            date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+            time = (str)(date_str)
+            time = int(time[11:13])/3
+            accounts = User.objects.all().filter(gender=gender, age=age)
+            starr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
+            for ac in accounts:
+                emotions = Final.objects.all().filter(userNo=ac.pk)
+                for emo in emotions:
+                    tm = emo.date
+                    tm = (str)(tm.strftime("%Y-%m-%d %H:%M:%S"))
+                    tm = int(tm[11:13])/3
+                    if int(time)!=int(tm):
+                        continue
+                    starr[emo.moodType-1][1]+=1
+        
+            starr.sort(key=lambda x:x[1],reverse=True)
+            stidx=({
+                'one' : starr[0],
+                'two' : starr[1],
+                'three' : starr[2],
+                'four' : starr[3],
+                'five' : starr[4],
+                'six' : starr[5],
+                'seven' : starr[6],
+                'eight' : starr[7],
+                'nine' : starr[8],
+                'ten' : starr[9],
+                })
+            statistic=({
+                'idx' : stidx,
+                'age' : age,
+                'gender' : gender,
+                'time' : int(time)
+                })
+        ##################### 통계 ####################################
+        one = 0
+        two = 0
+        three = 0
         music = Result.objects.all().filter(moodType=fr, resultType=1)
         cnt = music.count()
-        random_index = int(random.random()*cnt)
-        random_music = music[random_index].content 
-        idx = random_music.index('/')
-        singer = random_music[:idx]
-        title = random_music[idx+1:]
+        one = int(random.random()*cnt)
+        two = int(random.random()*cnt)
+        if(two==one):
+            while True:
+                number = int(random.random()*cnt)
+                if(number!=one):
+                    two = number
+                    break
+        if(three==one or three==two):
+            while True:
+                number = int(random.random()*cnt)
+                if(number!=one and number!=two):
+                    three = number    
+                    break
+                    
+        first_music = music[one].content 
+        firstidx = first_music.index('/')
+        firstsinger = first_music[:firstidx]
+        firsttitle = first_music[firstidx+1:]
 
+        second_music = music[two].content 
+        secondidx = second_music.index('/')
+        secondsinger = second_music[:secondidx]
+        secondtitle = second_music[secondidx+1:]
+
+        third_music = music[three].content 
+        thirdidx = third_music.index('/')
+        thirdsinger = third_music[:thirdidx]
+        thirdtitle = third_music[thirdidx+1:]
+
+        music=({
+                'first' : [firstsinger,firsttitle],
+                'second' : [secondsinger,secondtitle],
+                'third' : [thirdsinger,thirdtitle],
+                })
         tt = Result.objects.all().filter(moodType=fr, resultType=2)
         cnt = tt.count()
         random_index = int(random.random()*cnt)
@@ -472,7 +613,9 @@ def result(request):
         idx = random_text.index('-')
         text = random_text[:idx]
         where = random_text[idx+1:]
-        return Response({'emotions': emotion, 'text':[text,where], 'music':[singer,title]})
+
+        comment = Result.objects.all().filter(moodType=finalEmo, resultType=3)
+        return Response({'emotions': emotion, 'finalEmotion': finalEmo, 'statistic' : statistic, 'text':[text,where], 'music':music, 'comment' : comment[0].content})
     else:
         return HttpResponse('noUser', status=400)
 
