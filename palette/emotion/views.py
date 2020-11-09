@@ -434,11 +434,8 @@ def result(request):
         idx.append(fr)
         idx.append(se)
         idx.append(th)
-        emotion = ({
-            'first' : [idx[0],per[0]],
-            'second' : [idx[1],per[1]],
-            'third' : [idx[2],per[2]]
-        })
+        emotion = [[idx[0],per[0]],[idx[1],per[1]],[idx[2],per[2]]]
+        
         finalEmo = 0
         ##################### 2차 감정 ################################
         if(fr==0):
@@ -526,18 +523,7 @@ def result(request):
                     starr[emo.moodType-1][1]+=1
         
             starr.sort(key=lambda x:x[1],reverse=True)
-            stidx=({
-                'one' : starr[0],
-                'two' : starr[1],
-                'three' : starr[2],
-                'four' : starr[3],
-                'five' : starr[4],
-                'six' : starr[5],
-                'seven' : starr[6],
-                'eight' : starr[7],
-                'nine' : starr[8],
-                'ten' : starr[9],
-                })
+            stidx = [starr[0],starr[1],starr[2],starr[3],starr[4],starr[5],starr[6],starr[7],starr[8],starr[9]]
             statistic=({
                 'idx' : stidx,
                 'age' : age,
@@ -579,12 +565,8 @@ def result(request):
         thirdidx = third_music.index('/')
         thirdsinger = third_music[:thirdidx]
         thirdtitle = third_music[thirdidx+1:]
-
-        music=({
-                'first' : [firstsinger,firsttitle],
-                'second' : [secondsinger,secondtitle],
-                'third' : [thirdsinger,thirdtitle],
-                })
+        music = [[firstsinger,firsttitle],[secondsinger,secondtitle],[thirdsinger,thirdtitle]]
+        
         tt = Result.objects.all().filter(moodType=fr, resultType=2)
         cnt = tt.count()
         random_index = int(random.random()*cnt)
