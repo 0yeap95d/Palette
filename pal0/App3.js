@@ -3,8 +3,10 @@ import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image} from 'rea
 import AsyncStorage from '@react-native-community/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {AuthContext} from './src/context'
 import LottieView from 'lottie-react-native';
+
 
 import MainScreen from './page/MainScreen';  // 메인 로그인 버튼 
 import LoginScreen from './page/LoginScreen';  // 로그인
@@ -12,18 +14,22 @@ import JoinScreen from './page/JoinScreen';  // 닉네임 성별 나이 기입
 import HomeScreen from './page/HomeScreen';  // Home
 import CameraScreen from './page/CameraScreen'; // 영상 & 음성
 import ResultScreen from './page/ResultScreen'; // 결과 페이지
-import OnboardingScreen from './page/OnboardingScreen'; // 결과 페이지
+import OnboardingScreen from './page/OnboardingScreen'; 
+import ChartScreen from './page/ChartScreen'; 
 
 
 
 
-const userStack  = createStackNavigator();
+const userStack  = createDrawerNavigator();
 const UserStackScreen = () => (
     <userStack.Navigator>
         {/* <userStack.Screen name="Main" component={MainScreen} options={{headerShown: false}} /> */}
-        <userStack.Screen name="Home" component={HomeScreen} options={{headerShown: false}}/>
-        <userStack.Screen name="Camera" component={CameraScreen} options={{headerShown: false}}/>
-        <userStack.Screen name="Result" component={ResultScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="다이어리" component={HomeScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="감정 기록" component={CameraScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="통계" component={ChartScreen} options={{headerShown: false}}/>
+      
+        {/* <userStack.Screen name="Onboard" component={OnboardingScreen} options={{headerShown: false}} /> */}
+        {/* <userStack.Screen name="Result" component={ResultScreen} options={{headerShown: false}}/> */}
     </userStack.Navigator>
 );
 
@@ -194,14 +200,14 @@ const App = () => {
         source={require('./assets/img/loader1.json')} autoPlay roof/> */}
         <ImageBackground 
         style = {{width:'100%',height:'100%',alignItems: "center",}}
-        source={require("./assets/img/main.png")}
-        resizeMode="cover"
+        source={require("./assets/img/loader.jpg")}
+        resizeMode="stretch"
         >
-        <Text style={{height: 70,
+        {/* <Text style={{height: 70,
         marginTop:40,
         alignItems: "center",
         fontSize: 60,
-        fontFamily : "Golden Plains"}}>Palette</Text>
+        fontFamily : "Golden Plains"}}>Palette</Text> */}
         </ImageBackground>
         </View>
       );
