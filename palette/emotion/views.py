@@ -44,39 +44,30 @@ from . import stt
 def total(request):
     man = User.objects.all().filter(gender=1)
     woman = User.objects.all().filter(gender=2)
-
+    allarr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
     marr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
     for ac in man:
         emotions = Final.objects.all().filter(userNo=ac.pk)
         for emo in emotions:
             marr[emo.moodType-1][1]+=1
+            allarr[emo.moodType-1][1]+=1
 
     marr.sort(key=lambda x:x[1],reverse=True)
-    man=({
-        'one' : marr[0],
-        'two' : marr[1],
-        'three' : marr[2],
-        'four' : marr[3],
-        'five' : marr[4],
-    })
 
     warr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
     for ac in woman:
         emotions = Final.objects.all().filter(userNo=ac.pk)
         for emo in emotions:
             warr[emo.moodType-1][1]+=1
+            allarr[emo.moodType-1][1]+=1
 
     warr.sort(key=lambda x:x[1],reverse=True)
-    woman=({
-        'one' : warr[0],
-        'two' : warr[1],
-        'three' : warr[2],
-        'four' : warr[3],
-        'five' : warr[4],
-    })
+    allarr.sort(key=lambda x:x[1],reverse=True)
+    
     return Response({
-        'man' : man,
-        'woman' : woman
+        'man' : marr,
+        'woman' : warr,
+        'all' : allarr
     })
 
 @api_view(['GET'])
@@ -91,16 +82,10 @@ def searchage(request):
             arr[emo.moodType-1][1]+=1
 
     arr.sort(key=lambda x:x[1],reverse=True)
-    sta=({
-        'one' : arr[0],
-        'two' : arr[1],
-        'three' : arr[2],
-        'four' : arr[3],
-        'five' : arr[4],
-    })
+
     return Response({
         'age' : age,
-        'statistic' : sta
+        'statistic' : arr
     })
 
 @api_view(['GET'])
@@ -120,16 +105,10 @@ def searchtime(request):
         arr[emo.moodType-1][1]+=1
 
     arr.sort(key=lambda x:x[1],reverse=True)
-    sta=({
-        'one' : arr[0],
-        'two' : arr[1],
-        'three' : arr[2],
-        'four' : arr[3],
-        'five' : arr[4],
-    })
+    
     return Response({
         'time' : tm,
-        'statistic' : sta
+        'statistic' : arr
     })
 
 # 검사결과 일마다 날짜마다 결과     username
@@ -626,4 +605,4 @@ def apk(request):
     context={
         'img' : 'static/img/1.png'
     }
-    return render(request, 'apk.html', context)
+    return render(request, 'index.html', context)
