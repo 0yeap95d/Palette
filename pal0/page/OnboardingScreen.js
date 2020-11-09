@@ -17,6 +17,7 @@ export default function CameraScreen(props)  {
                 style={{
                     width:6,
                     height: 6,
+                    borderRadius:30,
                     marginHorizontal: 3,
                     backgroundColor
                 }}
@@ -26,28 +27,28 @@ export default function CameraScreen(props)  {
     
     const Skip = ({...props}) => (
         <TouchableOpacity
-            style={{marginHorizontal:10}}
+            style={{marginHorizontal:20}}
             {...props}
         >
-            <Text style={{fontSize:16}}>Skip</Text>
+            <Text style={styles.bottombtn}>Skip</Text>
         </TouchableOpacity>
     );
     
     const Next = ({...props}) => (
         <TouchableOpacity
-            style={{marginHorizontal:10}}
+            style={{marginHorizontal:20}}
             {...props}
         >
-            <Text style={{fontSize:16}}>Next</Text>
+            <Text style={styles.bottombtn}>Next</Text>
         </TouchableOpacity>
     );
     
     const Done = ({...props}) => (
         <TouchableOpacity
-            style={{marginHorizontal:10}}
+            style={{marginHorizontal:20}}
             {...props}
         >
-            <Text style={{fontSize:16}}>Done</Text>
+            <Text style={styles.bottombtn}>Done</Text>
         </TouchableOpacity>
     );
     
@@ -64,24 +65,30 @@ export default function CameraScreen(props)  {
         onDone={welcome}
         pages={[
           {
-            backgroundColor: '#a6e4d0',
-            image: <Image source={require('../assets/img/brush1.png')} />,
-            title: 'Connect to the World',
-            subtitle: 'A New Way To Connect With The World',
+            backgroundColor: '#e8f7e1',
+            image: <Image source={require('../assets/img/boarder1.png')} style={styles.imgcontainer} />,
+            title: '팔레트에 오신것을 환영합니다!',
+            subtitle: '반갑습니당',
           },
           {
-            backgroundColor: '#fdeb93',
-            image: <Image source={require('../assets/img/brush2.png')} />,
-            title: 'Share Your Favorites',
-            subtitle: 'Share Your Thoughts With Similar Kind of People',
+            backgroundColor: '#fff8d4',
+            image: <Image source={require('../assets/img/boarder2.png')} style={styles.imgcontainer} />,
+            title: '간편하게 카메라로 감정을 측정해보세요!',
+            subtitle: '수리수리마수리',
           },
           {
-            backgroundColor: '#e9bcbe',
-            image: <Image source={require('../assets/img/brush3.png')} />,
-            title: 'Become The Star',
-            subtitle: "Let The Spot Light Capture You",
+            backgroundColor: '#fad4d6',
+            image: <Image source={require('../assets/img/boarder3.png')}  style={styles.imgcontainer}/>,
+            title: '알록달록',
+            subtitle: "콩쥐팥쥐",
           },
         ]}
+        containerStyles={styles.container}
+        titleStyles={styles.title}
+        subTitleStyles={styles.subtitle}
+        bottomBarHighlight={false}
+        bottomBarHeight={50}
+        // imageContainerStyles ={styles.imgcontainer}
       />
     );
 };
@@ -92,6 +99,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1, 
     alignItems: 'center', 
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
+  imgcontainer:{
+    width:350,
+    height:350,
+    // backgroundColor:'red',
+    resizeMode:'stretch',
+    paddingBottom:0,
+    marginTop:-50,
+  },
+  title:{
+      fontFamily:'BMHANNAAir_ttf',
+      marginTop:-80
+  },
+  subtitle:{
+    fontFamily:'BMHANNAAir_ttf'
+  },
+  bottombtn:{
+      fontSize:13,
+      fontFamily:'BMHANNAAir_ttf',
+
+  }
+
 });

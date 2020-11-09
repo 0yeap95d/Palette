@@ -16,12 +16,12 @@ export default function MainScreen(props) {
     } catch (e) {
       console.log(e)
     }
-    props.navigation.push('Main');
+    // props.navigation.push('Main');
   }
 
   const goCamera = () =>{
     // goResult()
-    props.navigation.push('Result');
+    props.navigation.push('Chart');
   }
 
   return (
@@ -42,7 +42,8 @@ export default function MainScreen(props) {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.btns} 
-          loading={loading}>
+          loading={loading}
+          >
             <Image style={styles.btnimg} 
             source={require("../assets/img/books.png")}/>
             <Text style={styles.btntxt}>
