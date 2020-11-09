@@ -71,7 +71,7 @@ def total(request):
     })
 
 @api_view(['GET'])
-def searchage(request):
+def search(request):
     age=request.GET.get('age')
     account = User.objects.all().filter(age=age)
 
@@ -89,25 +89,29 @@ def searchage(request):
     })
 
 @api_view(['GET'])
-def searchtime(request):
+def search(request):
     tm=request.GET.get('time')
+    age=request.GET.get('age')
+    account = User.objects.all().filter(age=age)
     arr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
     
-    emotions = Final.objects.all()
-    for emo in emotions:
-        time = emo.date
-        date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-        time = (str)(date_str)
-        time = int(time[11:13])/3
-        time = int(time)
-        if(int(time)!=int(tm)):
-            continue
-        arr[emo.moodType-1][1]+=1
+    for ac in account:
+        emotions = Final.objects.all().filter(userNo=ac.pk)
+        for emo in emotions:
+            time = emo.date
+            date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+            time = (str)(date_str)
+            time = int(time[11:13])/3
+            time = int(time)
+            if(int(time)!=int(tm)):
+                continue
+            arr[emo.moodType-1][1]+=1
 
     arr.sort(key=lambda x:x[1],reverse=True)
     
     return Response({
         'time' : tm,
+        'age' : age,
         'statistic' : arr
     })
 
@@ -234,15 +238,35 @@ def save(request):
         #     mood7 = round(emotionValues[6]*100/cnt,2),
         #     option = 1
         # )
+        total = 100.0
+        cnt = [0,0,0,0,0,0,0]
+        ############## 데이터 생성 ####################
+        for i in range(4):
+            print(i)
+            num = random.uniform(0, 25)
+            cnt[i] = num
+            total -= num
+        
+        for i in range(2):
+            print(i+4)
+            num = random.uniform(0,total)
+            cnt[i+4] = num
+            total -= num
+        cnt[6] = total
+        print(cnt)
+
+            
+        ############## 데이터 생성 ####################
+
         emotion = Emotion.objects.create(
             userNo = user,
-            mood1 = 10,
-            mood2 = 20,
-            mood3 = 11,
-            mood4 = 13,
-            mood5 = 15,
-            mood6 = 11,
-            mood7 = 20,
+            mood1 = round(cnt[0],2),
+            mood2 = round(cnt[1],2),
+            mood3 = round(cnt[2],2),
+            mood4 = round(cnt[3],2),
+            mood5 = round(cnt[4],2),
+            mood6 = round(cnt[5],2),
+            mood7 = round(cnt[6],2),
             option = 1
         )
         emotion.save()

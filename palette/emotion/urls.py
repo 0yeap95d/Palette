@@ -5,8 +5,7 @@ app_name = 'emotion'
 
 urlpatterns = [
    path('total/', views.total),
-   path('searchage/', views.searchage),
-   path('searchtime/', views.searchtime),
+   path('search/', views.search),
    
    path('calendar/', views.calendar),
 
