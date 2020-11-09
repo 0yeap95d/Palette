@@ -64,28 +64,14 @@ def total(request):
     warr.sort(key=lambda x:x[1],reverse=True)
     allarr.sort(key=lambda x:x[1],reverse=True)
     
-    return Response({
-        'man' : marr,
-        'woman' : warr,
-        'all' : allarr
-    })
-
-@api_view(['GET'])
-def search(request):
-    age=request.GET.get('age')
-    account = User.objects.all().filter(age=age)
-
-    arr = [[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0],[8,0],[9,0],[10,0],[11,0],[12,0],[13,0],[14,0],[15,0],[16,0],[17,0],[18,0],[19,0],[20,0],[21,0]]
-    for ac in account:
-        emotions = Final.objects.all().filter(userNo=ac.pk)
-        for emo in emotions:
-            arr[emo.moodType-1][1]+=1
-
-    arr.sort(key=lambda x:x[1],reverse=True)
+    man = [marr[0],marr[1],marr[2],marr[3],marr[4]]
+    woman = [warr[0],warr[1],warr[2],warr[3],warr[4]]
+    all = [allarr[0],allarr[1],allarr[2],allarr[3],allarr[4],allarr[5],allarr[6],allarr[7],allarr[8],allarr[9]]
 
     return Response({
-        'age' : age,
-        'statistic' : arr
+        'man' : man,
+        'woman' : woman,
+        'all' : all
     })
 
 @api_view(['GET'])
@@ -108,11 +94,12 @@ def search(request):
             arr[emo.moodType-1][1]+=1
 
     arr.sort(key=lambda x:x[1],reverse=True)
+    sta = [arr[0],arr[1],arr[2],arr[3],arr[4]]
     
     return Response({
         'time' : tm,
         'age' : age,
-        'statistic' : arr
+        'statistic' : sta
     })
 
 # 검사결과 일마다 날짜마다 결과     username
@@ -400,6 +387,8 @@ def text(request):
 
 @api_view(['GET'])
 def result(request):
+    print(request)
+    print(request.GET.get('username'))
     user = User.objects.all().filter(username=request.GET.get('username'))
     if user:
         emotion = Emotion.objects.all().filter(userNo=user[0].pk, option=2).order_by('-date')[:3]
