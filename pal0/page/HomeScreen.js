@@ -16,7 +16,7 @@ export default function MainScreen(props) {
     } catch (e) {
       console.log(e)
     }
-    props.navigation.push('Main');
+    // props.navigation.push('Main');
   }
 
   const goCamera = () =>{

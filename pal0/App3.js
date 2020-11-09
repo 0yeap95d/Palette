@@ -3,6 +3,7 @@ import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image} from 'rea
 import AsyncStorage from '@react-native-community/async-storage';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
+import {createDrawerNavigator} from '@react-navigation/drawer';
 import {AuthContext} from './src/context'
 import LottieView from 'lottie-react-native';
 
@@ -19,16 +20,16 @@ import ChartScreen from './page/ChartScreen';
 
 
 
-const userStack  = createStackNavigator();
+const userStack  = createDrawerNavigator();
 const UserStackScreen = () => (
     <userStack.Navigator>
         {/* <userStack.Screen name="Main" component={MainScreen} options={{headerShown: false}} /> */}
-        <userStack.Screen name="Home" component={HomeScreen} options={{headerShown: false}}/>
-        <userStack.Screen name="Camera" component={CameraScreen} options={{headerShown: false}}/>
-        <userStack.Screen name="Chart" component={ChartScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="다이어리" component={HomeScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="감정 기록" component={CameraScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="통계" component={ChartScreen} options={{headerShown: false}}/>
       
-        <userStack.Screen name="Onboard" component={OnboardingScreen} options={{headerShown: false}} />
-        <userStack.Screen name="Result" component={ResultScreen} options={{headerShown: false}}/>
+        {/* <userStack.Screen name="Onboard" component={OnboardingScreen} options={{headerShown: false}} /> */}
+        {/* <userStack.Screen name="Result" component={ResultScreen} options={{headerShown: false}}/> */}
     </userStack.Navigator>
 );
 
