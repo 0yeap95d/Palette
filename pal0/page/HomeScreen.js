@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {AuthContext} from '../src/context'
-
+import {drawernavigation} from '@react-navigation/drawer'
 export default function MainScreen(props) {
   const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(false);
@@ -23,9 +23,16 @@ export default function MainScreen(props) {
     // goResult()
     props.navigation.push('Chart');
   }
+  // const openmenu = ({navigation}) =>{
+  //   navigation.toggleDrawer();
+  // }
 
   return (
     <View style={styles.root}>
+        {/* <TouchableOpacity
+        onPress={openmenu}>
+          <Text>메뉴열기</Text>
+        </TouchableOpacity> */}
         <Text style={styles.logout}
           onPress={logout}
         >logout </Text>

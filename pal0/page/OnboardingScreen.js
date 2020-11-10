@@ -65,19 +65,19 @@ export default function CameraScreen(props)  {
         onDone={welcome}
         pages={[
           {
-            backgroundColor: '#e8f7e1',
+            backgroundColor: '#e5c1c5',
             image: <Image source={require('../assets/img/boarder1.png')} style={styles.imgcontainer} />,
             title: '팔레트에 오신것을 환영합니다!',
             subtitle: '반갑습니당',
           },
           {
-            backgroundColor: '#fff8d4',
+            backgroundColor: '#f2eee5',
             image: <Image source={require('../assets/img/boarder2.png')} style={styles.imgcontainer} />,
             title: '간편하게 카메라로 감정을 측정해보세요!',
             subtitle: '수리수리마수리',
           },
           {
-            backgroundColor: '#fad4d6',
+            backgroundColor: '#c3e2dd44',
             image: <Image source={require('../assets/img/boarder3.png')}  style={styles.imgcontainer}/>,
             title: '알록달록',
             subtitle: "콩쥐팥쥐",

@@ -16,7 +16,7 @@ export default function MainScreen(props){
       if(id){
         console.log('Main : 로그인 기록 있음')
         // this.props.setLogin(true)
-        props.navigation.push('Home');
+        // props.navigation.push('Home');
       }else {
         console.log('Main : 로그인 기록 없음');
         // this.props.setLogin(false)
