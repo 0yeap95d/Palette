@@ -8,7 +8,7 @@ import {AuthContext} from './src/context'
 import LottieView from 'lottie-react-native';
 
 
-import MainScreen from './page/MainScreen';  // 메인 로그인 버튼 
+import MainScreen from './page/MainScreen';  // 메인 로그인 버튼 1
 import LoginScreen from './page/LoginScreen';  // 로그인
 import JoinScreen from './page/JoinScreen';  // 닉네임 성별 나이 기입 
 import HomeScreen from './page/HomeScreen';  // Home
@@ -16,20 +16,20 @@ import CameraScreen from './page/CameraScreen'; // 영상 & 음성
 import ResultScreen from './page/ResultScreen'; // 결과 페이지
 import OnboardingScreen from './page/OnboardingScreen'; 
 import ChartScreen from './page/ChartScreen'; 
-
+import {DrawerContent} from './page/DrawerContent'
 
 
 
 const userStack  = createDrawerNavigator();
 const UserStackScreen = () => (
-    <userStack.Navigator>
+<userStack.Navigator drawerContent={props => <DrawerContent {...props}/>}>
         {/* <userStack.Screen name="Main" component={MainScreen} options={{headerShown: false}} /> */}
-        <userStack.Screen name="다이어리" component={HomeScreen} options={{headerShown: false}}/>
-        <userStack.Screen name="감정 기록" component={CameraScreen} options={{headerShown: false}}/>
-        <userStack.Screen name="통계" component={ChartScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="Home" component={HomeScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="Camera" component={CameraScreen} options={{headerShown: false}}/>
+        <userStack.Screen name="Chart" component={ChartScreen} options={{headerShown: false}}/>
       
-        {/* <userStack.Screen name="Onboard" component={OnboardingScreen} options={{headerShown: false}} /> */}
-        {/* <userStack.Screen name="Result" component={ResultScreen} options={{headerShown: false}}/> */}
+        <userStack.Screen name="Onboard" component={OnboardingScreen} options={{headerShown: false}} />
+        <userStack.Screen name="Result" component={ResultScreen} options={{headerShown: false}}/>
     </userStack.Navigator>
 );
 
@@ -122,6 +122,7 @@ const App = () => {
 
             try {
                 await AsyncStorage.setItem('userId', userToken);
+                console.log('로그인성공')
               } catch(e) {
                 console.log(e);
               }
@@ -131,6 +132,7 @@ const App = () => {
         signOut : async () =>{
             try {
                 await AsyncStorage.removeItem('userId');
+                console.log('로그아웃')
               } catch(e) {
                 console.log(e);
               }
@@ -176,7 +178,7 @@ const App = () => {
     }
 
     useEffect(() => {
-       AsyncStorage.setItem('userId', 'iii')
+      //  AsyncStorage.setItem('userId', 'iii')
       //  AsyncStorage.removeItem('boardToken');
       let isFirstLaunch = true;
       setTimeout(async() => {

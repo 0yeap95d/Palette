@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet,TouchableOpacity,Alert } from 'react-native';
+import { Text, View, StyleSheet,TouchableOpacity,Alert,ImageBackground } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
@@ -58,6 +58,11 @@ export default function LoginScreen(props) {
 
   return (
     <View style={styles.root}>
+          <ImageBackground
+        style={styles.content}
+        source={require("../assets/img/bg4.jpg")}
+        resizeMode="stretch"
+      >
         <Text style={styles.logo}>Palette</Text>
         <View style={styles.inputView} >
           <TextInput  
@@ -90,7 +95,7 @@ export default function LoginScreen(props) {
           onPress={goSignup}
           >Signup</Text>
         </TouchableOpacity>
-
+        </ImageBackground>
     </View>
   );
 }
@@ -101,10 +106,16 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  content :{
+    width: '100%',
+    height : '100%',
+    alignItems: "center",
+  },
   logo:{
     fontFamily : "Golden Plains",
     fontSize:80,
     marginBottom:40,
+    marginTop:100,
   },
   inputView:{
     width:"80%",
