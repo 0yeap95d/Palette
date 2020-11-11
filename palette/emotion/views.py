@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from django.http import HttpResponse, JsonResponse, Http404
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
-from .models import Emotion, Question, Result, Final
+from .models import Emotion, Question, Result, Final, Qr
 from .serializers import EmotionSerializer, QuestionSerializer
 import operator
 import sqlite3, datetime
@@ -449,56 +449,56 @@ def result(request):
         idx.append(th)
         emotion = [[idx[0],per[0]],[idx[1],per[1]],[idx[2],per[2]]]
         
-        finalEmo = 0
+        finalEmo = ''
         ##################### 2차 감정 ################################
         if(fr==0):
             if(se==1):
-                finalEmo=1
+                finalEmo='경멸'
             if(se==2):
-                finalEmo=2
+                finalEmo='무력함'
             if(se==3):
-                finalEmo=3
+                finalEmo='당혹'
             if(se==4):
-                finalEmo=4
+                finalEmo='비통함'
             if(se==5):
-                finalEmo=5
+                finalEmo='격분'
             if(se==6):
-                finalEmo=6
+                finalEmo='공격성'
         if(fr==1):
             if(se==2):
-                finalEmo=7
+                finalEmo='수치심'
             if(se==3):
-                finalEmo=8
+                finalEmo='불건전한 흥미'
             if(se==4):
-                finalEmo=9
+                finalEmo='자책'
             if(se==5):
-                finalEmo=10
+                finalEmo='불신'
             if(se==6):
-                finalEmo=11
+                finalEmo='역겨움'
         if(fr==2):
             if(se==3):
-                finalEmo=12
+                finalEmo='외경심'
             if(se==4):
-                finalEmo=13
+                finalEmo='절망'
             if(se==5):
-                finalEmo=14
+                finalEmo='경외'
             if(se==6):
-                finalEmo=15
+                finalEmo='두려움'
         if(fr==3):
             if(se==4):
-                finalEmo=16
+                finalEmo='혼란'
             if(se==5):
-                finalEmo=17
+                finalEmo='설렘'
             if(se==6):
-                finalEmo=18
+                finalEmo='낙관'
         if(fr==4):
             if(se==5):
-                finalEmo=19
+                finalEmo='반감'
             if(se==6):
-                finalEmo=20
+                finalEmo='우울함'
         if(fr==5):
             if(se==6):
-                finalEmo=21    
+                finalEmo='놀람'
             
         final = Final.objects.create(
             userNo = user,
@@ -596,8 +596,32 @@ def result(request):
 
 @api_view(['GET'])
 def apk(request):
+
+    return render(request, 'index.html')
+
+
+@api_view(['GET'])
+def qr(request):
+    print(request.GET.get('username'))
+    username = request.GET.get('username')
+    user = User.objects.all().filter(username=username)
     
-    context={
-        'img' : 'static/img/1.png'
-    }
-    return render(request, 'index.html', context)
+    record = Qr.objects.all().filter(userNo=user[0].pk).order_by('-date')[:1]
+    check = 0
+    if record :
+        time = record[0].date
+        date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+        time = (str)(date_str)
+        time = time[0:10]
+        nowT = datetime.now()
+        date_str = nowT.strftime("%Y-%m-%d %H:%M:%S")
+        nowT = (str)(date_str)
+        nowT = nowT[0:10]
+        print(time)
+        print(nowT)
+        if(time==nowT):
+            check = 1
+    return Response({'check': check})
+
+
+

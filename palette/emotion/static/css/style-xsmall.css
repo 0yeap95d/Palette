@@ -10,9 +10,11 @@
 
 /* Basic */
 @media ( max-width: 768px ){
+
 	body {
 		background: #fff;
 	}
+	
 	.style5{
 		height:600px;
 	}
@@ -981,14 +983,14 @@
 
 		#banner h2 {
 			color: #ffffff;
-			font-size: 6em;
+			font-size: 2em;
 			line-height: 1.25em;
 			margin: 0 0 0.5em 0;
 			padding: 0;
 		}
 
 		#banner p {
-			font-size: 1.5em;
+			font-size: 1em;
 			margin-bottom: 1.75em;
 		}
 
@@ -1000,7 +1002,6 @@
 		/* Style 2 Wrapper */
 		/* Style 3 Wrapper */
 	}
-
 		.wrapper.style1 {
 			background-color: #F5F5F5;
 			border-bottom: 1px solid rgba(144, 144, 144, 0.25);
@@ -1139,9 +1140,10 @@
 			height: 100%;
 		}
 		
-
 		.logo,.iconset{
 			width:100%;
 		}
-		
+		.sub1{
+			padding-right: 10%;
+		}
 }

@@ -11,5 +11,6 @@ urlpatterns = [
 
    path('save/', views.save),
    path('text/', views.text),
-   path('result/', views.result)
+   path('result/', views.result),
+   path('qr/', views.qr)
 ]
