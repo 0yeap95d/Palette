@@ -30,3 +30,4 @@ class Final(models.Model):
 class Qr(models.Model):
     userNo = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
+
