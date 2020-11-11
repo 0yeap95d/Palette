@@ -449,60 +449,92 @@ def result(request):
         idx.append(th)
         emotion = [[idx[0],per[0]],[idx[1],per[1]],[idx[2],per[2]]]
         
-        finalEmo = ''
+        finalEmo = '초기값'
+        num = 0
+        op = -1
+        if fr > se:
+            th = fr
+            fr = se
+            se = th
+            op = 1
         ##################### 2차 감정 ################################
         if(fr==0):
             if(se==1):
                 finalEmo='경멸'
+                num = 1
             if(se==2):
+                num = 2
                 finalEmo='무력함'
             if(se==3):
+                num = 3
                 finalEmo='당혹'
             if(se==4):
+                num = 4
                 finalEmo='비통함'
             if(se==5):
+                num = 5
                 finalEmo='격분'
             if(se==6):
+                num = 6
                 finalEmo='공격성'
         if(fr==1):
             if(se==2):
+                num = 7
                 finalEmo='수치심'
             if(se==3):
+                num = 8
                 finalEmo='불건전한 흥미'
             if(se==4):
+                num = 9
                 finalEmo='자책'
             if(se==5):
+                num = 10
                 finalEmo='불신'
             if(se==6):
+                num = 11
                 finalEmo='역겨움'
         if(fr==2):
             if(se==3):
+                num = 12
                 finalEmo='외경심'
             if(se==4):
+                num = 13
                 finalEmo='절망'
             if(se==5):
+                num = 14
                 finalEmo='경외'
             if(se==6):
+                num = 15
                 finalEmo='두려움'
         if(fr==3):
             if(se==4):
+                num = 16
                 finalEmo='혼란'
             if(se==5):
+                num = 17
                 finalEmo='설렘'
             if(se==6):
+                num = 18
                 finalEmo='낙관'
         if(fr==4):
             if(se==5):
+                num = 19
                 finalEmo='반감'
             if(se==6):
+                num = 20
                 finalEmo='우울함'
         if(fr==5):
             if(se==6):
+                num = 21
                 finalEmo='놀람'
-            
+
+        if op==1:
+            th = fr
+            fr = se
+            se = th
         final = Final.objects.create(
             userNo = user,
-            moodType = finalEmo
+            moodType = num
         )
         final.save()
         ##################### 2차 감정 ################################
@@ -587,8 +619,7 @@ def result(request):
         idx = random_text.index('-')
         text = random_text[:idx]
         where = random_text[idx+1:]
-
-        comment = Result.objects.all().filter(moodType=finalEmo, resultType=3)
+        comment = Result.objects.all().filter(moodType=num, resultType=3)
         return Response({'emotions': emotion, 'finalEmotion': finalEmo, 'statistic' : statistic, 'text':[text,where], 'music':music, 'comment' : comment[0].content})
     else:
         return HttpResponse('noUser', status=400)
