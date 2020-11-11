@@ -6,20 +6,33 @@ import {AuthContext} from '../src/context'
 import LottieView from 'lottie-react-native';
 import Modal from 'react-native-modal'
 import {BarChart} from 'react-native-chart-kit'
+import { color } from 'react-native-reanimated';
 
 export default function ResultScreen(props) {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isModal,setModal] = useState(false);
-  const data = {
-    labels: ["경멸", "당혹", "격분", "수치심", "혼란", "설렘","낙관","반감","우울함","놀람"],
+  const [threeEmo,setThreeEmo] = useState([]);
+  const [totalMood,setTotalMood] = useState(null);
+  const [moodComment,setMoodComment] = useState(null);
+  const [music,setMusic] = useState([])
+  const [chartdata,setchartData] = useState([[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]);
+  const [age,setAge] = useState(0);
+  const [gender,setGender] = useState(0);
+  const [time,setTime] = useState(0);
+  const [pharse,setPharse] = useState([]);
+
+  let data = {
+    labels: [ chartdata[0][0], chartdata[1][0],chartdata[2][0],chartdata[3][0],chartdata[4][0],chartdata[5][0],chartdata[6][0],chartdata[7][0],chartdata[8][0],chartdata[9][0],],
     datasets: [
       {
-        data: [20, 45, 28, 80, 99, 43,45, 28, 80, 99, 43],
+        data: [chartdata[0][1],chartdata[1][1],chartdata[2][1],chartdata[3][1],chartdata[4][1],chartdata[5][1],chartdata[6][1],chartdata[7][1],chartdata[8][1],chartdata[9][1],],
         strokeWidth: 2, // optional
         
       }
     ],
   };
+
+
   const chartConfig = {
     // backgroundGradientFrom: "#1E2923",
     backgroundGradientFromOpacity: 0,
@@ -85,9 +98,15 @@ export default function ResultScreen(props) {
   const colorarr = [
   require('../assets/img/color1.png'),
   require('../assets/img/color2.png'),
-  require('../assets/img/color3.png')]
-  let color1 = colorarr[0], color2 = colorarr[1], color3 = colorarr[2];
+  require('../assets/img/color3.png'),
+  require('../assets/img/color1.png'),
+  require('../assets/img/color2.png'),
+  require('../assets/img/color3.png'),
+  require('../assets/img/color1.png'),
+  require('../assets/img/color2.png'),]
+  let colorimg = [colorarr[0],colorarr[1],colorarr[2]];
   let userToken = null;
+  
 
   const goHome = () => {
       exitResult()
@@ -98,6 +117,55 @@ export default function ResultScreen(props) {
       axios.get(`http://k3d102.p.ssafy.io:8000/emotion/result/?username=${userToken}`)
       .then(res =>{
         console.log(res.data)
+        
+        var emocolorarr = [];
+        for(var i=0;i<3;i++){
+          switch(res.data.emotions[i][0]){
+            case 0 :
+              colorimg[i] = colorarr[0]
+              emocolorarr.push("분노")
+              break;
+            case 1 :
+              colorimg[i] = colorarr[1]
+              emocolorarr.push("혐오")
+              break;
+            case 2 :
+              colorimg[i] = colorarr[2]
+              emocolorarr.push("두려움")
+              break;
+            case 3 :
+              colorimg[i] = colorarr[3]
+              emocolorarr.push("행복")
+              break;
+            case 4 :
+              colorimg[i] = colorarr[4]
+              emocolorarr.push("슬픔")
+              break;
+            case 5 :
+              colorimg[i] = colorarr[5]
+              emocolorarr.push("놀람")
+              break;
+            case 6 :
+              colorimg[i] = colorarr[6]
+              emocolorarr.push("평범")
+              break;
+              
+          }
+        }
+        console.log(emocolorarr)
+        setThreeEmo(emocolorarr)
+        setTotalMood(res.data.finalEmotion)         
+        setMoodComment(res.data.comment)
+        setchartData(res.data.statistic.idx)
+        setAge(res.data.statistic.age)
+        setMusic(res.data.music)
+        if(res.data.statistic.gender == 1) {
+          setGender("남성")
+        }else setGender("여성")
+        setTime(res.data.statistic.time)
+        setPharse(res.data.text)
+
+
         setLoading(false)
       }).catch(err =>{
           console.log(err)
@@ -154,8 +222,8 @@ export default function ResultScreen(props) {
             <View style={styles.maincolor}>
               <ImageBackground
               style={styles.imgs}
-              source={color1} >
-                <Text style={styles.colortxt}>슬픔</Text>
+              source={colorimg[0]} >
+                <Text style={styles.colortxt}>{threeEmo[0]}</Text>
               </ImageBackground>
             </View>
 
@@ -163,15 +231,15 @@ export default function ResultScreen(props) {
               <View style={styles.color}>
               <ImageBackground
                 style={styles.imgs}
-                source={color2} >
-                  <Text style={styles.colortxt}>분노</Text>
+                source={colorimg[1]} >
+                  <Text style={styles.colortxt}>{threeEmo[1]}</Text>
                 </ImageBackground>
               </View>
               <View style={styles.color}>
               <ImageBackground
                 style={styles.imgs}
-                source={color3} >
-                  <Text style={styles.colortxt}>두려움</Text>
+                source={colorimg[2]} >
+                  <Text style={styles.colortxt}>{threeEmo[2]}</Text>
                 </ImageBackground>
               </View>
             </View>
@@ -179,14 +247,14 @@ export default function ResultScreen(props) {
 {/* ------------감정 설명------------------------------- */}
         <View style={styles.decswrap}>
         <View style={styles.decs}> 
-          <Text style={styles.decstitle}>우울함</Text>
+          <Text style={styles.decstitle}>{totalMood}</Text>
           <Text style={styles.decscontent}>
-            당신의 현재 감정상태 중 가장 크게 느끼고 있는 감정은 슬픔입니다.
-            그 다음으로 분노, 두려움을 느끼고 있군요.
-            결과를 토대로 우리가 예측한 당신의 감정은 우울함으로 예상됩니다.
-            살아가면서 누구나 예상치 못한 어려움을 겪게 되고, 
-            울적한 기분이 들지만 우울해지는 뚜렷한 이유가 있고
-             시간이 지나면 평소처럼 회복이 됩니다.
+            {moodComment}
+
+            {'\n'}
+            {pharse[0]} 
+            {'\n'}
+            - {pharse[1]} -
           </Text>
         </View>
 {/* ------------추천 리스트-------------------------- */}
@@ -195,9 +263,9 @@ export default function ResultScreen(props) {
           <Text style={styles.decscontent}>
             당신을 위해 노래를 준비했어요! {'\n'}
             울적함을 달래고 에너지를 줄 수 있길 바라요. {'\n\n'}
-            🎵 샤이니 - 투명우산{'\n\n'}
-            🎵 prep - Turn The Music up{'\n\n'}
-            🎵 이하이 - 홀로{'\n\n'}
+            🎵 {music[0][0]} - {music[0][1]}{'\n\n'}
+            🎵 {music[1][0]} - {music[1][1]}{'\n\n'}
+            🎵 {music[2][0]} - {music[2][1]}{'\n\n'}
 
            노래를 들으며 달콤한 코코아차 한잔 어떠신가요? {'\n'}
            코코아는 아침 식전에 마시면 활력을 주는 역할을 합니다.
@@ -206,7 +274,7 @@ export default function ResultScreen(props) {
         </View>
         
 {/* ------------성별,시간대,연령에 맞는 통계-------------------------- */}
-        <Text style={styles.avgtitle}>오전 12시, 20대 남성들의 결과는?</Text>
+        <Text style={styles.avgtitle}>{time}시, {age}0대 {gender}들의 결과는?</Text>
           <View style={styles.avgresult}>
           <View style={styles.avgchart}>
           <BarChart

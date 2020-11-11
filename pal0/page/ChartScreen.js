@@ -4,53 +4,84 @@ import {Animated,Component} from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import { Picker } from "@react-native-community/picker";
+import LottieView from 'lottie-react-native';
 
 
 export default function ChartScreen(props) {
+    const [loading, setLoading] = useState(true);
     let [age, setAge] = React.useState(1);
     let [time,setTime]  = React.useState(0);
-    let timeimg  = [require('../assets/img/time1.png'),require('../assets/img/time2.png'),require('../assets/img/time3.png'),require('../assets/img/time4.png'),]
+    const [totalchartdata,setTotaldata] = useState([[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]);
+    const [womanchartdata,setWomandata] =useState([[0,0],[0,0],[0,0],[0,0],[0,0]]);
+    const [manchartdata,setMandata] =useState([[0,0],[0,0],[0,0],[0,0],[0,0]]);
+    const [timechartdata,setTimedata] =useState([[0,0],[0,0],[0,0],[0,0],[0,0]]);
 
+    const [toptotal,settoptotal] = useState(null)
+    const [mantotal,setmantotal] = useState(null)
+    const [womantotal,setwomantotal] = useState(null)
+
+    let total = {
+        labels: [ totalchartdata[0][0], totalchartdata[1][0],totalchartdata[2][0],totalchartdata[3][0],totalchartdata[4][0],totalchartdata[5][0],totalchartdata[6][0],totalchartdata[7][0],totalchartdata[8][0],totalchartdata[9][0],],
+        datasets:[totalchartdata[0][1]%200,totalchartdata[1][1]%200,totalchartdata[2][1]%200,totalchartdata[3][1]%200,totalchartdata[4][1]%200,totalchartdata[5][1]%200,totalchartdata[6][1]%200,totalchartdata[7][1]%200,totalchartdata[8][1]%200,totalchartdata[9][1]%200,],
+    }
+    let woman = {
+        labels: [ womanchartdata[0][0], womanchartdata[1][0],womanchartdata[2][0],womanchartdata[3][0],womanchartdata[4][0]],
+        datasets: [womanchartdata[0][1]%100,womanchartdata[1][1]%100,womanchartdata[2][1]%100,womanchartdata[3][1]%100,womanchartdata[4][1]%100,],
+    }
+    let man = {
+        labels: [ manchartdata[0][0], manchartdata[1][0],manchartdata[2][0],manchartdata[3][0],manchartdata[4][0]],
+        datasets: [manchartdata[0][1]%100,manchartdata[1][1]%100,manchartdata[2][1]%100,manchartdata[3][1]%100,manchartdata[4][1]%100],
+    }
+    let timechart = {
+        labels: [ timechartdata[0][0], timechartdata[1][0],timechartdata[2][0],timechartdata[3][0],timechartdata[4][0]],
+        datasets: [timechartdata[0][1]%100,timechartdata[1][1]%100,timechartdata[2][1]%100,timechartdata[3][1]%100,timechartdata[4][1]%100,],
+    }
+    
+    const timeimg  = [require('../assets/img/time1.png'),require('../assets/img/time2.png'),require('../assets/img/time3.png'),require('../assets/img/time4.png'),]
     const fivelabelcolor = ['#de0102','#01c5c4','#b8de6f','#f1e189','#f39233']
     const tenlabelcolor = ['#de0102','#01c5c4','#b8de6f','#f1e189','#f39233','red','yellow','black','green','blue']
     
-    let total = {
-        datasets : [10,12,33,24,15,10,12,84,24,15],
-        labels : ['외로움','우울함','행복함','즐거움','기쁨','외로움','우울함','행복함','즐거움','기쁨']
-    }
-    let woman = {
-        datasets : [10,12,33,24,15],
-        labels : ['외로움','우울함','행복함','즐거움','기쁨']
-    }
-    let man = {
-        datasets : [10,12,33,24,15],
-        labels : ['외로움','우울함','행복함','즐거움','기쁨']
-    }
-    let timechart = {
-        datasets : [80,52,73,14,25],
-        labels : ['외로움','우울함','행복함','즐거움','기쁨']
+    const changechart = (age,time) =>{
+        console.log(age+",,,,"+time)
+        axios.get(`http://k3d102.p.ssafy.io:8000/emotion/search/?age=${age}&time=${time}`)
+        .then(res =>{
+            console.log(res.data)
+            setAge(res.data.age)
+            setTime(res.data.time)
+            setTimedata(res.data.statistic)
+        }).catch(err =>{
+            console.log(err)
+        })
+      
     }
 
-
-
-    // var total  = null;
-
+    var tt=0, aa= 1;
+ 
     useEffect(()=>{
         axios.get("http://k3d102.p.ssafy.io:8000/emotion/total/")
           .then(res =>{
-            console.log(res.data)
-            // total = res.data.all
+            setTotaldata(res.data.all)
+            setMandata(res.data.man)
+            setWomandata(res.data.woman)
+
+            settoptotal(res.data.all[0][0])
+            setmantotal(res.data.man[0][0])
+            setwomantotal(res.data.woman[0][0])
+            setLoading(false)
+
           }).catch(err =>{
               console.log(err)
           })
-          console.log(age+" "+time)
           axios.get(`http://k3d102.p.ssafy.io:8000/emotion/search/?age=${age}&time=${time}`)
           .then(res =>{
-            console.log(res.data)
-            
+            setAge(res.data.age)
+            setTime(res.data.time)
+            setTimedata(res.data.statistic)
+
           }).catch(err =>{
               console.log(err)
           })
+        
 
 
     }, []);
@@ -138,6 +169,22 @@ export default function ChartScreen(props) {
     const timelabel = timechart.labels.map(
         (label) =>  (<View style={styles.fivelabel}><Text style={styles.labeltxt}>{label}</Text></View>)
     );
+
+
+
+    if(loading) {
+        return (
+          <View style={{flex:1,justifyContetn:'center',alignItems:'center'}}>
+            {/* <ActivityIndicator size ="large"/> */}      
+              <LottieView 
+              source={require('../assets/img/loader3.json')} autoPlay roof/>
+          </View>
+        );
+      }
+
+
+
+
    return (
     <ScrollView  style={styles.root}>
         <ImageBackground
@@ -151,13 +198,13 @@ export default function ChartScreen(props) {
 
 
 {/* ---------------전체 차트-------------------------- */}
-        <Text style={styles.headertxt}>'행복함'을 가장 많이 느끼고 있어요</Text>
+        <Text style={styles.headertxt}>'{toptotal}'을 가장 많이 느끼고 있어요</Text>
         <View style={styles.totalbox}>
             <View style={{flexDirection:'row',height:180,alignItems:'flex-end'}}>{totaldata}</View>
             <View style={{flexDirection:'row',alignItems:'flex-end'}}>{totallabel}</View>
         </View>
 {/* -------------성별 차트---------------------- */}
-        <Text style={styles.headertxt}>여자는 '외로움', 남자는 '우울함'</Text>
+   <Text style={styles.headertxt}>여자는 '{womantotal}', 남자는 '{mantotal}'</Text>
         <View style={styles.peoplebox}>
             <View style={styles.people}>
                 <Image style={styles.peopleimg} 
@@ -186,7 +233,10 @@ export default function ChartScreen(props) {
             <Picker
                 style={{flex:1,height:40,borderColor:'black',borderWidth:1,}}
                 selectedValue={age}
-                onValueChange={(v)=>setAge(v)}
+                onValueChange={(v)=>{
+                    setAge(v)
+                    changechart(v,time)
+                }}
             >
                 <Picker.Item label="~10대" value='1'/>
                 <Picker.Item label="20대" value='2'/>
@@ -197,7 +247,10 @@ export default function ChartScreen(props) {
             <Picker
                 style={{flex:1,height:40,borderColor:'black',borderWidth:1,}}
                 selectedValue={time}
-                onValueChange={(v)=>setTime(v)}
+                onValueChange={(v)=>{
+                    setTime(v)
+                    changechart(age,v)
+                }}
             >
                 <Picker.Item label="0시~3시" value='0'/>
                 <Picker.Item label="3시~6시" value='1'/>
