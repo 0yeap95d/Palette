@@ -161,12 +161,12 @@ export default function ChartScreen(props) {
         <View style={styles.peoplebox}>
             <View style={styles.people}>
                 <Image style={styles.peopleimg} 
-                source={require("../assets/img/woman1.png")}></Image>
+                source={require("../assets/img/woman.png")}></Image>
                 <Text style={styles.womantxt}>여자</Text>
             </View>
             <View style={styles.people}>
                 <Image style={styles.peopleimg} 
-                source={require("../assets/img/man1.png")}></Image>
+                source={require("../assets/img/man.png")}></Image>
                 <Text style={styles.mantxt}>남자</Text>
             </View>
 

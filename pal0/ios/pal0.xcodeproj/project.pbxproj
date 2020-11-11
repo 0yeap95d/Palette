@@ -34,6 +34,12 @@
 		A891122A769A462890AA3644 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B2EE3C180B284A8588DA2B49 /* Octicons.ttf */; };
 		5C8800AED82A4D62B47AB8CB /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 14F25C4BB0CF499587310BD2 /* SimpleLineIcons.ttf */; };
 		C37710A6499F49838F993ED9 /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 847EF5F258604E00B15EC75B /* Zocial.ttf */; };
+		40F3FE54515E47C68A2B082B /* Broadcast_Matter.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 18E97139FE2340B3BA3782BC /* Broadcast_Matter.ttf */; };
+		3910AAB6F9AC4689BE00A3D7 /* Cafe24Oneprettynight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2937CA7450EA42CB8504F934 /* Cafe24Oneprettynight.ttf */; };
+		4A85D40080CA414A8FFE3A6E /* eunyoung.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7631FB4A235D4804B9B62B76 /* eunyoung.ttf */; };
+		975F2313CDB840C3A5EFE84D /* Oneprettynight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 15298302D6B94759B2853BFB /* Oneprettynight.ttf */; };
+		A97EFF372069466DBA601AF9 /* SDMiSaeng.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C330D8C620E415797D84657 /* SDMiSaeng.ttf */; };
+		4D2BE5F54D9F4C55BEB2A68C /* TaeFont TSTHlmL.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C441C4C9FC9C4B3EBF5D4B72 /* TaeFont TSTHlmL.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +93,12 @@
 		B2EE3C180B284A8588DA2B49 /* Octicons.ttf */ = {isa = PBXFileReference; name = "Octicons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Octicons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		14F25C4BB0CF499587310BD2 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		847EF5F258604E00B15EC75B /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		18E97139FE2340B3BA3782BC /* Broadcast_Matter.ttf */ = {isa = PBXFileReference; name = "Broadcast_Matter.ttf"; path = "../assets/fonts/Broadcast_Matter.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		2937CA7450EA42CB8504F934 /* Cafe24Oneprettynight.ttf */ = {isa = PBXFileReference; name = "Cafe24Oneprettynight.ttf"; path = "../assets/fonts/Cafe24Oneprettynight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		7631FB4A235D4804B9B62B76 /* eunyoung.ttf */ = {isa = PBXFileReference; name = "eunyoung.ttf"; path = "../assets/fonts/eunyoung.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		15298302D6B94759B2853BFB /* Oneprettynight.ttf */ = {isa = PBXFileReference; name = "Oneprettynight.ttf"; path = "../assets/fonts/Oneprettynight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6C330D8C620E415797D84657 /* SDMiSaeng.ttf */ = {isa = PBXFileReference; name = "SDMiSaeng.ttf"; path = "../assets/fonts/SDMiSaeng.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C441C4C9FC9C4B3EBF5D4B72 /* TaeFont TSTHlmL.ttf */ = {isa = PBXFileReference; name = "TaeFont TSTHlmL.ttf"; path = "../assets/fonts/TaeFont TSTHlmL.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -215,6 +227,12 @@
 				B2EE3C180B284A8588DA2B49 /* Octicons.ttf */,
 				14F25C4BB0CF499587310BD2 /* SimpleLineIcons.ttf */,
 				847EF5F258604E00B15EC75B /* Zocial.ttf */,
+				18E97139FE2340B3BA3782BC /* Broadcast_Matter.ttf */,
+				2937CA7450EA42CB8504F934 /* Cafe24Oneprettynight.ttf */,
+				7631FB4A235D4804B9B62B76 /* eunyoung.ttf */,
+				15298302D6B94759B2853BFB /* Oneprettynight.ttf */,
+				6C330D8C620E415797D84657 /* SDMiSaeng.ttf */,
+				C441C4C9FC9C4B3EBF5D4B72 /* TaeFont TSTHlmL.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -376,6 +394,12 @@
 				A891122A769A462890AA3644 /* Octicons.ttf in Resources */,
 				5C8800AED82A4D62B47AB8CB /* SimpleLineIcons.ttf in Resources */,
 				C37710A6499F49838F993ED9 /* Zocial.ttf in Resources */,
+				40F3FE54515E47C68A2B082B /* Broadcast_Matter.ttf in Resources */,
+				3910AAB6F9AC4689BE00A3D7 /* Cafe24Oneprettynight.ttf in Resources */,
+				4A85D40080CA414A8FFE3A6E /* eunyoung.ttf in Resources */,
+				975F2313CDB840C3A5EFE84D /* Oneprettynight.ttf in Resources */,
+				A97EFF372069466DBA601AF9 /* SDMiSaeng.ttf in Resources */,
+				4D2BE5F54D9F4C55BEB2A68C /* TaeFont TSTHlmL.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

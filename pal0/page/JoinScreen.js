@@ -84,7 +84,7 @@ export default function JoinScreen(props) {
             })
             .then(res=>{
                 console.log(res);
-                props.navigation.push('Home');
+                // props.navigation.push('Home');
             }).catch(err=>{
                 console.log(err)
                 Alert.alert('회원가입 중 문제가 발생했습니다.');

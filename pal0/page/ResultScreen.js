@@ -95,9 +95,7 @@ export default function ResultScreen(props) {
 
   const getResult = () =>{
     console.log('결과 주세요')
-      axios.get("http://k3d102.p.ssafy.io:8000/emotion/result/",{
-        username : userToken,
-      })
+      axios.get(`http://k3d102.p.ssafy.io:8000/emotion/result/?username=${userToken}`)
       .then(res =>{
         console.log(res.data)
         setLoading(false)
@@ -112,7 +110,7 @@ export default function ResultScreen(props) {
         try {
           userToken = await AsyncStorage.getItem('userId');
           console.log('여긴 result:'+userToken)
-          // getResult()
+          getResult()
         } catch(e) {
           console.log(e);
         }
