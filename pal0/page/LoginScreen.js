@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet,TouchableOpacity,Alert,ImageBackground } from 'react-native';
+import { Text, View, StyleSheet,TouchableOpacity,Alert,ImageBackground,ScrollView } from 'react-native';
 import { TextInput } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
@@ -57,7 +57,7 @@ export default function LoginScreen(props) {
   }
 
   return (
-    <View style={styles.root}>
+    <ScrollView style={styles.root}>
           <ImageBackground
         style={styles.content}
         source={require("../assets/img/bg4.jpg")}
@@ -67,7 +67,7 @@ export default function LoginScreen(props) {
         <View style={styles.inputView} >
           <TextInput  
             style={styles.inputText}
-            placeholder="ID..." 
+            placeholder="Id..." 
             underlineColor='#ECEBF2'
             placeholderTextColor="#003f5c"
             onChangeText={userId => setUserId(userId)}/>
@@ -86,25 +86,25 @@ export default function LoginScreen(props) {
         style={styles.loginBtn}
         onPress={goLogin}
         >
-          <Text style={styles.loginText}>LOGIN</Text>
+          <Text style={styles.loginText}>로그인</Text>
         </TouchableOpacity>
 
         <TouchableOpacity>
           <Text 
           style={styles.forgot}
           onPress={goSignup}
-          >Signup</Text>
+          >회원가입</Text>
         </TouchableOpacity>
         </ImageBackground>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'center',
+    // alignItems: 'center',
   },
   content :{
     width: '100%',
@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
     color:"gray",
     fontSize:11,
     marginTop:10,
-    fontFamily : 'BMHANNAAir_ttf'
+    fontFamily : 'BMHANNAAir_ttf',
+    marginBottom:100,
   },
   loginBtn:{
     width:"70%",

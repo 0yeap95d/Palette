@@ -17,6 +17,8 @@ target 'pal0' do
 
   pod 'RNSVG', :path => '../node_modules/react-native-svg'
 
+  pod 'react-native-aes', :path => '../node_modules/react-native-aes-crypto'
+
   target 'pal0Tests' do
     inherit! :complete
     # Pods for testing
