@@ -142,121 +142,124 @@ def calendar(request):
 # 결과 저장하면서 그 결과 보내주기
 @api_view(['POST'])
 def save(request):
+    print(request.data)
+    video = request.data.get('data').get('_parts')[0][1].get('uri')
+    print(video)
     user = User.objects.all().filter(username=request.data.get('username'))
     if user:
 
-        # #load model
-        # model = model_from_json(open('./models/fer.json', 'r').read())
-        # #load weights
-        # model.load_weights('./models/fer.h5')
-        # face_haar_cascade = cv2.CascadeClassifier('./models/haarcascade_frontalface_default.xml')
+        #load model
+        model = model_from_json(open('./models/fer.json', 'r').read())
+        #load weights
+        model.load_weights('./models/fer.h5')
+        face_haar_cascade = cv2.CascadeClassifier('./models/haarcascade_frontalface_default.xml')
 
-        # cap=cv2.VideoCapture('./models/baby.mp4')
+        cap=cv2.VideoCapture(video)
 
-        # emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
-        # emotionValues = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
-        # cnt = 0
-        # begin_time = time.time()
+        emotions = ('angry', 'disgust', 'fear', 'happy', 'sad', 'surprise', 'neutral')
+        emotionValues = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        cnt = 0
+        begin_time = time.time()
 
-        # while(cap.isOpened()):
+        while(cap.isOpened()):
 
-        #     ret,test_img=cap.read()# captures frame and returns boolean value and captured image
-        #     if not ret:
-        #         continue
-        #     gray_img= cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
+            ret,test_img=cap.read()# captures frame and returns boolean value and captured image
+            if not ret:
+                continue
+            gray_img= cv2.cvtColor(test_img, cv2.COLOR_BGR2GRAY)
 
-        #     faces_detected = face_haar_cascade.detectMultiScale(gray_img, 1.32, 5)
-
-
-        #     for (x,y,w,h) in faces_detected:
-        #         cv2.rectangle(test_img,(x,y),(x+w,y+h),(255,0,0),thickness=7)
-        #         roi_gray=gray_img[y:y+w,x:x+h]#cropping region of interest i.e. face area from  image
-        #         roi_gray=cv2.resize(roi_gray,(48,48))
-        #         img_pixels = image.img_to_array(roi_gray)
-        #         img_pixels = np.expand_dims(img_pixels, axis = 0)
-        #         img_pixels /= 255
-
-        #         predictions = model.predict(img_pixels)
-
-        #         #find max indexed array
-        #         max_index = np.argmax(predictions[0])
-        #         max_value = np.max(predictions[0])
+            faces_detected = face_haar_cascade.detectMultiScale(gray_img, 1.32, 5)
 
 
-        #         # netural 감정이 최고값이 아닐때,
-        #         if (max_index != 6):
-        #             cnt += 1
-        #             for i in range(len(emotions)):
-        #                 emotionValues[i] += predictions[0][i]
-        #         else:
-        #             logging.warning("except neutral")
+            for (x,y,w,h) in faces_detected:
+                cv2.rectangle(test_img,(x,y),(x+w,y+h),(255,0,0),thickness=7)
+                roi_gray=gray_img[y:y+w,x:x+h]#cropping region of interest i.e. face area from  image
+                roi_gray=cv2.resize(roi_gray,(48,48))
+                img_pixels = image.img_to_array(roi_gray)
+                img_pixels = np.expand_dims(img_pixels, axis = 0)
+                img_pixels /= 255
 
-        #         predicted_emotion = emotions[max_index]
+                predictions = model.predict(img_pixels)
 
-        #         logging.warning(predicted_emotion)
-        #         logging.warning(max_value)
-        #         logging.warning(emotionValues)
-        #         cv2.putText(test_img, predicted_emotion + str(max_value) + "%", (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
-
-        #     resized_img = cv2.resize(test_img, (1000, 700))
-        #     cv2.imshow('Facial emotion analysis ',resized_img)
+                #find max indexed array
+                max_index = np.argmax(predictions[0])
+                max_value = np.max(predictions[0])
 
 
-        #     if cv2.waitKey(10) == ord('q'):
-        #         break
+                # netural 감정이 최고값이 아닐때,
+                if (max_index != 6):
+                    cnt += 1
+                    for i in range(len(emotions)):
+                        emotionValues[i] += predictions[0][i]
+                else:
+                    logging.warning("except neutral")
 
-        #     # timer
-        #     process_time = time.time() - begin_time
-        #     if (process_time > 10):
-        #         cap.release()
-        #         break
-        # print('cnt',cnt)
-        # print('emotionValues',emotionValues)
+                predicted_emotion = emotions[max_index]
+
+                logging.warning(predicted_emotion)
+                logging.warning(max_value)
+                logging.warning(emotionValues)
+                cv2.putText(test_img, predicted_emotion + str(max_value) + "%", (int(x), int(y)), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
+
+            resized_img = cv2.resize(test_img, (1000, 700))
+            cv2.imshow('Facial emotion analysis ',resized_img)
+
+
+            if cv2.waitKey(10) == ord('q'):
+                break
+
+            # timer
+            process_time = time.time() - begin_time
+            if (process_time > 10):
+                cap.release()
+                break
+        print('cnt',cnt)
+        print('emotionValues',emotionValues)
         # 총 감정 분석해줄 영상 받기
         user = get_object_or_404(User, pk=user[0].pk)
-        # emotion = Emotion.objects.create(
-        #     userNo = user,
-        #     mood1 = round(emotionValues[0]*100/cnt,2),
-        #     mood2 = round(emotionValues[1]*100/cnt,2),
-        #     mood3 = round(emotionValues[2]*100/cnt,2),
-        #     mood4 = round(emotionValues[3]*100/cnt,2),
-        #     mood5 = round(emotionValues[4]*100/cnt,2),
-        #     mood6 = round(emotionValues[5]*100/cnt,2),
-        #     mood7 = round(emotionValues[6]*100/cnt,2),
-        #     option = 1
-        # )
-        total = 100.0
-        cnt = [0,0,0,0,0,0,0]
+        emotion = Emotion.objects.create(
+            userNo = user,
+            mood1 = round(emotionValues[0]*100/cnt,2),
+            mood2 = round(emotionValues[1]*100/cnt,2),
+            mood3 = round(emotionValues[2]*100/cnt,2),
+            mood4 = round(emotionValues[3]*100/cnt,2),
+            mood5 = round(emotionValues[4]*100/cnt,2),
+            mood6 = round(emotionValues[5]*100/cnt,2),
+            mood7 = round(emotionValues[6]*100/cnt,2),
+            option = 1
+        )
+        # total = 100.0
+        # cnt = [0,0,0,0,0,0,0]
         ############## 데이터 생성 ####################
-        for i in range(4):
-            print(i)
-            num = random.uniform(0, 25)
-            cnt[i] = num
-            total -= num
+        # for i in range(4):
+        #     print(i)
+        #     num = random.uniform(0, 25)
+        #     cnt[i] = num
+        #     total -= num
         
-        for i in range(2):
-            print(i+4)
-            num = random.uniform(0,total)
-            cnt[i+4] = num
-            total -= num
-        cnt[6] = total
-        print(cnt)
+        # for i in range(2):
+        #     print(i+4)
+        #     num = random.uniform(0,total)
+        #     cnt[i+4] = num
+        #     total -= num
+        # cnt[6] = total
+        # print(cnt)
 
             
         ############## 데이터 생성 ####################
 
-        emotion = Emotion.objects.create(
-            userNo = user,
-            mood1 = round(cnt[0],2),
-            mood2 = round(cnt[1],2),
-            mood3 = round(cnt[2],2),
-            mood4 = round(cnt[3],2),
-            mood5 = round(cnt[4],2),
-            mood6 = round(cnt[5],2),
-            mood7 = round(cnt[6],2),
-            option = 1
-        )
-        emotion.save()
+        # emotion = Emotion.objects.create(
+        #     userNo = user,
+        #     mood1 = round(cnt[0],2),
+        #     mood2 = round(cnt[1],2),
+        #     mood3 = round(cnt[2],2),
+        #     mood4 = round(cnt[3],2),
+        #     mood5 = round(cnt[4],2),
+        #     mood6 = round(cnt[5],2),
+        #     mood7 = round(cnt[6],2),
+        #     option = 1
+        # )
+        # emotion.save()
         
         return HttpResponse('success', status=200)
     else:
@@ -656,3 +659,25 @@ def qr(request):
 
 
 
+@api_view(['GET'])
+def mk(request):
+    print(request.GET.get('username'))
+    username = request.GET.get('username')
+    user = User.objects.all().filter(username=username)
+    
+    record = Qr.objects.all().filter(userNo=user[0].pk).order_by('-date')[:1]
+    check = 0
+    if record :
+        time = record[0].date
+        date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+        time = (str)(date_str)
+        time = time[0:10]
+        nowT = datetime.now()
+        date_str = nowT.strftime("%Y-%m-%d %H:%M:%S")
+        nowT = (str)(date_str)
+        nowT = nowT[0:10]
+        print(time)
+        print(nowT)
+        if(time==nowT):
+            check = 1
+    return Response({'check': check})
