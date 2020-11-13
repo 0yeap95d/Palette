@@ -108,6 +108,8 @@ def calendar(request):
     user = User.objects.all().filter(username=request.GET.get('username'))
     if user:
         emotion = Emotion.objects.all().filter(userNo=user[0].pk, option=3).order_by('date')
+        cnt = [[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]],[[1,0],[2,0],[3,0],[4,0],[5,0],[6,0],[7,0]]]
+        count = [0,0,0,0,0,0,0,0,0,0,0,0]
         et=[]
         t = ''
         for emo in emotion:
@@ -118,7 +120,7 @@ def calendar(request):
             if t==time:
                 continue
             t=time
-
+            month = int(time[5:7])
             arr = []
             arr.append(emo.mood1)
             arr.append(emo.mood2)
@@ -130,11 +132,16 @@ def calendar(request):
             arr2 = arr[:]
             arr.sort(reverse=True)
             fr = arr2.index(arr[0])
+            
+            cnt[month-1][fr-1][1] += 1
 
             cl=[time, fr]
             et.append(cl)
-
-        return Response({'emotions': et})
+        for i in  range(12):
+            cnt[i].sort(key=lambda x:x[1],reverse=True)
+            if cnt[i][0][1]!=0:
+                count[i] = cnt[i][0][0]
+        return Response({'emotions': et, 'count':count})
     else:
         return HttpResponse('noUser', status=400)
 
@@ -145,6 +152,8 @@ def save(request):
     print(request.data)
     video = request.data.get('data').get('_parts')[0][1].get('uri')
     print(video)
+    # video = 'file:///data/user/0/com.pal0/cache/Camera/dfb5018b-0624-4caa-9ac3-cc63ecdd8f96.mp4'
+
     user = User.objects.all().filter(username=request.data.get('username'))
     if user:
 
@@ -215,6 +224,8 @@ def save(request):
                 break
         print('cnt',cnt)
         print('emotionValues',emotionValues)
+        if cnt==0:
+            cnt = 1
         # 총 감정 분석해줄 영상 받기
         user = get_object_or_404(User, pk=user[0].pk)
         emotion = Emotion.objects.create(
