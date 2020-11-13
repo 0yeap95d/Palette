@@ -1,14 +1,17 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, TouchableOpacity ,Text,Alert} from 'react-native';
+import {View, StyleSheet, TouchableOpacity ,Text,Alert,ImageBackground,Image,ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Button,RadioButton,TextInput} from 'react-native-paper';
 import { Picker } from "@react-native-community/picker";
 import axios from 'axios';
 import {AuthContext} from '../src/context'
+import * as Animatable from 'react-native-animatable';
+import Feather from 'react-native-vector-icons/Feather';
 
 export default function JoinScreen(props) {
     const {signIn} = React.useContext(AuthContext);
     const [loading, setLoading] = useState(false);  
+    const [secureTextEntry,setSecure] = useState(true)
     let [pk, setPk] = useState(0);
     let [userId, setUserId] = useState('');
     let [userPw, setUserPw] = useState('');
@@ -16,6 +19,11 @@ export default function JoinScreen(props) {
     let [checked, setChecked] = React.useState(0);
 
     let pknum = 0;
+
+    const updateSecureTextEntry = () =>{
+        setSecure(!secureTextEntry)
+    }
+
 
     const checkJoin = () => {
         console.log('-- 가입 정보 체크 -- ')
@@ -26,7 +34,7 @@ export default function JoinScreen(props) {
         console.log(checked) 
 
         if(userId==''){
-            Alert.alert('아이디를 입력하세요')
+            Alert.alert('닉네임을 입력하세요')
         }else if(userPw==''){
             Alert.alert('비밀번호를 입력하세요')
         }else if(age==0){
@@ -103,34 +111,100 @@ export default function JoinScreen(props) {
 
 
   return (
-    <View style={styles.root}>
+    <ScrollView  style={styles.root}>
+        <ImageBackground
+            style={styles.content}
+            source={require("../assets/img/bg4.jpg")}
+            resizeMode="stretch">
         <Text style={styles.welcometxt}>Welcome Palette</Text>
-        <View style={styles.inputView} >
-            <Text style={styles.labels}>ID</Text>
-          <TextInput  
-            style={styles.inputText}
-            placeholderTextColor="#003f5c"
-            onChangeText={userId => setUserId(userId)}/>
+
+        <View style={styles.select}>
+            <TouchableOpacity style={styles.sex}
+             onPress = {() => {
+                setChecked(1)
+            }}>
+                <View>
+                <Image
+                   style={checked==1 ? styles.selectsex : styles.notselect}
+                    source={require('../assets/img/man.png')}
+                />
+                </View>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.sex}
+                onPress = {() => {
+                    setChecked(2)
+                }}>
+            <View>
+                <Image
+                   style={checked==2 ? styles.selectsex : styles.notselect}
+                    source={require('../assets/img/woman.png')}
+                />
+            </View>
+            </TouchableOpacity>
+
         </View>
 
         <View style={styles.inputView} >
-            <Text style={styles.labels}>PW</Text>
+            <Text style={styles.labels}>닉네임</Text>
+          <TextInput  
+            style={styles.inputText}
+            placeholderTextColor="#003f5c"
+            autoCapitalize="none"
+            onChangeText={userId => setUserId(userId)}/>
+            <View style={{width:30}}>
+            {userId ? 
+                <Animatable.View
+                    animation="bounceIn"
+                >
+                    <Feather 
+                        name="check-circle"
+                        color="#C8B6E5"
+                        size={20}
+                    />
+                </Animatable.View>
+                : null}
+                </View>
+        </View>
+
+        <View style={styles.inputView} >
+            <Text style={styles.labels}>비밀번호</Text>
             <TextInput  
                 style={styles.inputText}
+                secureTextEntry={secureTextEntry ? true : false}
+                autoCapitalize="none"
                 placeholderTextColor="#003f5c"
                 onChangeText={userPw => setUserPw(userPw)}/>
+                 <TouchableOpacity
+                    onPress={updateSecureTextEntry}
+                    style={{width:30}}
+                >
+                    {secureTextEntry ? 
+                    <Feather 
+                        name="eye-off"
+                        color="grey"
+                        size={20}
+                    />
+                    :
+                    <Feather 
+                        name="eye"
+                        color="grey"
+                        size={20}
+                    />
+                    }
+                </TouchableOpacity>
         </View>
 
 
         <View style={styles.select}>
             <View style={styles.pickerset}>
-              <Text style={styles.pickertxt}>Age</Text>
+              <Text style={styles.labels}>나이</Text>
               <Picker
                 style={styles.picker} //스타일 지정
                 selectedValue={age} //제일 위 선택란에 누른 아이템이 표시된다
                 onValueChange={(v) => setAge(v)}
                 >            
-                <Picker.Item label="나이를 입력하세요" value="0" />
+                <Picker.Item label="나이를 선택하세요" value="0" />
                 <Picker.Item label="10대" value="1" />
                 <Picker.Item label="20대" value="2" />
                 <Picker.Item label="30대" value="3" />
@@ -139,27 +213,7 @@ export default function JoinScreen(props) {
             </Picker>
             </View>
         </View>
-        <View style={styles.select}>
-            <View style={styles.sex}>
-                <Text style={styles.sextxt}>👦Man</Text>
-                <RadioButton
-                value="1"
-                status={ checked === 1 ? 'checked' : 'unchecked' }
-                color="purple"
-                onPress = {() =>setChecked(1)}
-                testID = "남자"
-                />
-            </View>
-            <View style={styles.sex}>
-                <Text style={styles.sextxt}>👩Woman</Text>
-                <RadioButton
-                value="2"
-                status={ checked === 2 ? 'checked' : 'unchecked' }
-                color="purple"
-                onPress = {() =>setChecked(2)}
-                />
-            </View>
-        </View>
+       
  
 
         <TouchableOpacity 
@@ -167,38 +221,60 @@ export default function JoinScreen(props) {
         loading={loading}
         style={styles.nextbtn}
         >
-        <Text style={styles.loginText}>NEXT</Text>
+        <Text style={styles.loginText}>가입하기</Text>
         </TouchableOpacity>
-
-       
-    </View>
+        
+        </ImageBackground>
+    </ScrollView >
   );
 }
 
 const styles = StyleSheet.create({
- root : {
-    backgroundColor: '#fff',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: "center",
-
-},
+    selectsex:{
+        width:120,
+        height:120,
+        borderRadius:200,
+        backgroundColor:'#ECEBFa',
+    },  
+    notselect:{
+        width:120,
+        height:120,
+        borderRadius:200,
+        backgroundColor:'white'
+    },
+    root: {
+        flex: 1,
+        width: '100%',
+        flexDirection: 'column'
+    },
+    content: {
+        width: '100%',
+        height: '100%',
+        alignItems: "center"
+    },
 welcometxt:{
     fontFamily : "Golden Plains",
     fontSize:40,
-    marginBottom:70,
+    marginTop:40,
+    marginBottom:40,
 },
 inputView: {
-    marginBottom: 10,
     justifyContent: "center",
-    flexDirection: 'row'
+    flexDirection: 'row',
+    marginTop: 10,
+    marginLeft:20,
+    marginRight:10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+    paddingBottom: 5,
 },
+
 inputText: {
     height: 50,
-    padding: 10,
     color: "gray",
-    width: 250,
-    height: 20,
+    flex: 1,
+    paddingLeft: 10,
+    marginTop: Platform.OS === 'ios' ? 0 : -12,
     backgroundColor: "transparent"
 },
 nextbtn: {
@@ -208,8 +284,8 @@ nextbtn: {
     height: 50,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 60,
-    marginBottom: 10
+    marginTop: 20,
+    marginBottom: 100
 },
 loginText: {
     color: "white",
@@ -219,29 +295,24 @@ labels: {
     fontFamily : 'BMHANNAAir_ttf',
     fontSize:16,
     marginRight:10,
-    width:40
+    width:60,
 },
 select : {
     flexDirection: 'row',
     alignItems: "center",
     width:'100%',
     justifyContent: 'center',
-
+    marginLeft:20,
+    marginRight:10,
+    marginBottom:30,
 },
 sex:{
-    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
-    width: "45%",
+    flex:1,
     marginRight:5,
     marginLeft:5,
-    borderRadius:10,
-},
-sextxt : {
-    fontFamily : 'BMHANNAAir_ttf',
-    fontSize:16
-
 },
 pickerset :{
     justifyContent: 'center',
