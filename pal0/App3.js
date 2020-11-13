@@ -202,14 +202,20 @@ const App = () => {
         source={require('./assets/img/loader1.json')} autoPlay roof/> */}
         <ImageBackground 
         style = {{width:'100%',height:'100%',alignItems: "center",}}
-        source={require("./assets/img/loader.jpg")}
+        source={require("./assets/img/mainbg.jpg")}
         resizeMode="stretch"
         >
-        {/* <Text style={{height: 70,
-        marginTop:40,
+        <Text style={{height: 70,
+        marginTop:180,
         alignItems: "center",
-        fontSize: 60,
-        fontFamily : "Golden Plains"}}>Palette</Text> */}
+        fontSize: 80,
+        fontFamily : "Golden Plains"}}>Palette</Text>
+
+        <Text style={{
+          fontSize:22,
+          fontFamily:"Golden Plains",
+          marginTop:100,
+        }}>team</Text>
         </ImageBackground>
         </View>
       );
