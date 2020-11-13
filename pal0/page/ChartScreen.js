@@ -38,8 +38,8 @@ export default function ChartScreen(props) {
     }
     
     const timeimg  = [require('../assets/img/time1.png'),require('../assets/img/time2.png'),require('../assets/img/time3.png'),require('../assets/img/time4.png'),]
-    const fivelabelcolor = ['#de0102','#01c5c4','#b8de6f','#f1e189','#f39233']
-    const tenlabelcolor = ['#de0102','#01c5c4','#b8de6f','#f1e189','#f39233','red','yellow','black','green','blue']
+    const fivelabelcolor = ['#0b2027','#40798c','#70a9a1','#cfd7c7','#f6f1d1']
+    const tenlabelcolor = ['#55467D','#6B579D','#8069BC','#967BDC','#A58DE1','#B4A0E6','#C3B3EB','#D2C6F0','#E1D0F5','#F0ECFA']
     
     const changechart = (age,time) =>{
         console.log(age+",,,,"+time)
@@ -112,7 +112,7 @@ export default function ChartScreen(props) {
         return {
             width: color,
             height:10,
-            backgroundColor:'orange',
+            backgroundColor:'#eda6b3',
             justifyContent: 'center',
             alignContent:'center',
             marginBottom:8,
@@ -124,7 +124,7 @@ export default function ChartScreen(props) {
         return {
             width: color,
             height:10,
-            backgroundColor:'green',
+            backgroundColor:'#85baaf',
             justifyContent: 'center',
             alignContent:'center',
             marginBottom:8,
@@ -192,13 +192,10 @@ export default function ChartScreen(props) {
         source={require("../assets/img/bg4.jpg")}
         resizeMode="stretch"
         >
-        <View style={styles.headerstyle}>
-
-        </View>
 
 
 {/* ---------------전체 차트-------------------------- */}
-        <Text style={styles.headertxt}>'{toptotal}'을 가장 많이 느끼고 있어요</Text>
+        <Text style={styles.mainheadertxt}>'{toptotal}'을 가장 많이 느끼고 있어요</Text>
         <View style={styles.totalbox}>
             <View style={{flexDirection:'row',height:180,alignItems:'flex-end'}}>{totaldata}</View>
             <View style={{flexDirection:'row',alignItems:'flex-end'}}>{totallabel}</View>
@@ -288,6 +285,14 @@ const styles = StyleSheet.create({
 headerstyle:{
     height:150,
 },
+mainheadertxt:{
+    fontFamily: 'BMHANNAAir_ttf',
+    fontSize: 18,
+    fontWeight:'bold',
+    width:'90%',
+    marginTop:10,
+    paddingTop:10,
+},
 headertxt:{
     fontFamily: 'BMHANNAAir_ttf',
     fontSize: 18,
@@ -306,7 +311,7 @@ etcchart:{
     height:160,
     marginLeft:20,
     marginRight:3,
-    backgroundColor:'white',
+    backgroundColor:'rgba(256,256,256,0.8)',
     borderRadius:20,
     justifyContent: 'center',
     alignItems: 'center',
@@ -374,7 +379,7 @@ etcbox: {
 totalbox: {
     width: '95%',
     height: 200,
-    backgroundColor:'white',
+    backgroundColor:'rgba(256,256,256,0.8)',
     marginTop: 10,
     paddingBottom:8,
     borderRadius: 20,
@@ -384,19 +389,19 @@ totalbox: {
 womantxt: {
     fontFamily: 'BMHANNAAir_ttf',
     marginTop: 5,
-    color: 'orange'
+    color: '#eda6b3'
 },
 mantxt: {
     fontFamily: 'BMHANNAAir_ttf',
     marginTop: 5,
-    color: 'green'
+    color: '#85baaf'
 },
 peoplechart: {
     flex: 5,
     height: 180,
     marginLeft: 7,
     marginRight: 7,
-    backgroundColor:'white',
+    backgroundColor:'rgba(256,256,256,0.8)',
     borderRadius: 25,
     flexDirection: 'row',
     alignItems: 'center',

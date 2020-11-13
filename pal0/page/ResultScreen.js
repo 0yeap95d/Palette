@@ -1,5 +1,5 @@
 import React, {useState,useEffect} from 'react';
-import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image,Alert,ScrollView } from 'react-native';
+import {View, StyleSheet, ImageBackground,TouchableOpacity,Text,Image,Alert,ScrollView ,NativeModules, Linking} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import {AuthContext} from '../src/context'
@@ -7,10 +7,14 @@ import LottieView from 'lottie-react-native';
 import Modal from 'react-native-modal'
 import {BarChart} from 'react-native-chart-kit'
 import { color } from 'react-native-reanimated';
+import QRCode from 'react-native-qrcode-svg'
 
 export default function ResultScreen(props) {
+  let userToken = null;
+  const [userId,setuserid] = useState(null)
   const [loading, setLoading] = useState(true);
   const [isModal,setModal] = useState(false);
+  const [isreceived,setIsreceived] = useState(false);
   const [threeEmo,setThreeEmo] = useState([]);
   const [totalMood,setTotalMood] = useState(null);
   const [moodComment,setMoodComment] = useState(null);
@@ -20,6 +24,8 @@ export default function ResultScreen(props) {
   const [gender,setGender] = useState(0);
   const [time,setTime] = useState(0);
   const [pharse,setPharse] = useState([]);
+  const {exitResult} = React.useContext(AuthContext);
+  let [qrvalue,setqrvalue] = useState("qr")
 
   let data = {
     labels: [ chartdata[0][0], chartdata[1][0],chartdata[2][0],chartdata[3][0],chartdata[4][0],chartdata[5][0],chartdata[6][0],chartdata[7][0],chartdata[8][0],chartdata[9][0],],
@@ -50,67 +56,79 @@ export default function ResultScreen(props) {
     fillShadowGradientOpacity: 1, // THIS
   };
 
-  const chartConfiguration = {
-    type: 'bar',
-    data: {
-      labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-      datasets: [{
-        label: '# of Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-          'rgba(255,99,132,1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      maintainAspectRatio : false,
-      scales: {
-        yAxes: [{
-          ticks: {
-            beginAtZero: true
-          }
-        }]
-      }
-    }
-  
-}; 
-
-  const {exitResult} = React.useContext(AuthContext);
-  
-  const toggleModal = () => {
-    setModal(!isModal);
+  // 암호화 aes 
+  var Aes = NativeModules.Aes
+ 
+  const generateKey = (password, salt, cost, length) => Aes.pbkdf2(password, salt, cost, length)
+   
+  const encryptData = (text, key) => {
+      return Aes.randomKey(16).then(iv => {
+          return Aes.encrypt(text, key, iv).then(cipher => ({
+              cipher,
+              iv,
+          }))
+      })
   }
 
+  const decryptData = (encryptedData, key) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
+
+  const toggleModal = () => {
+    console.log('큐알코드~?')
+
+    var qrstring = (
+      ""+userId+
+      "/"+(new Date().toISOString().slice(0,10))+
+      "/"+totalMood
+    )
+
+    // setqrvalue(qrstring)
+
+    console.log(qrstring)
+    axios.get(`http://k3d102.p.ssafy.io:8000/emotion/qr/?username=${userId}`)
+    .then(res =>{
+      if(res.data.check==0) {
+        setIsreceived(false)
+      
+        try {
+          generateKey('palette', 'emotion', 5000, 256).then(key => {
+            console.log('Key:', key)
+            encryptData(qrstring, key)
+              .then(({ cipher, iv }) => {
+                  console.log('Encrypted:', cipher)
+                  setqrvalue(cipher)
+              })
+              .catch(error => {
+                  console.log(error)
+              })
+          })
+      } catch (e) {
+          console.error(e)
+      }
+      
+      } //선물 안 받은거
+      else setIsreceived(true) //선물 받았음
+      setModal(!isModal);
+    }).catch(err =>{
+      console.log(err)
+    })
+    setModal(!isModal);
+  }    // qr코드 모달 ~~~~
+ 
   const colorarr = [
   require('../assets/img/color1.png'),
   require('../assets/img/color2.png'),
   require('../assets/img/color3.png'),
-  require('../assets/img/color1.png'),
-  require('../assets/img/color2.png'),
-  require('../assets/img/color3.png'),
-  require('../assets/img/color1.png'),
-  require('../assets/img/color2.png'),]
+  require('../assets/img/color4.png'),
+  require('../assets/img/color5.png'),
+  require('../assets/img/color6.png'),
+  require('../assets/img/color7.png'),]
   let colorimg = [colorarr[0],colorarr[1],colorarr[2]];
-  let userToken = null;
   
 
   const goHome = () => {
       exitResult()
   }
+
 
   const getResult = () =>{
     console.log('결과 주세요')
@@ -152,19 +170,21 @@ export default function ResultScreen(props) {
               
           }
         }
-        console.log(emocolorarr)
+        // console.log(emocolorarr)
         setThreeEmo(emocolorarr)
         setTotalMood(res.data.finalEmotion)         
         setMoodComment(res.data.comment)
         setchartData(res.data.statistic.idx)
         setAge(res.data.statistic.age)
         setMusic(res.data.music)
+
         if(res.data.statistic.gender == 1) {
           setGender("남성")
         }else setGender("여성")
         setTime(res.data.statistic.time)
         setPharse(res.data.text)
 
+        
 
         setLoading(false)
       }).catch(err =>{
@@ -178,6 +198,7 @@ export default function ResultScreen(props) {
         try {
           userToken = await AsyncStorage.getItem('userId');
           console.log('여긴 result:'+userToken)
+          setuserid(userToken)
           getResult()
         } catch(e) {
           console.log(e);
@@ -250,12 +271,13 @@ export default function ResultScreen(props) {
           <Text style={styles.decstitle}>{totalMood}</Text>
           <Text style={styles.decscontent}>
             {moodComment}
-
-            {'\n'}
-            {pharse[0]} 
-            {'\n'}
-            - {pharse[1]} -
           </Text>
+            <Text style={styles.pharsetxt}>
+            {pharse[0]} 
+            </Text>
+            <Text style={styles.pharsetxt}>
+            - {pharse[1]} -
+            </Text>
         </View>
 {/* ------------추천 리스트-------------------------- */}
         <View style={styles.decs}>
@@ -263,10 +285,23 @@ export default function ResultScreen(props) {
           <Text style={styles.decscontent}>
             당신을 위해 노래를 준비했어요! {'\n'}
             울적함을 달래고 에너지를 줄 수 있길 바라요. {'\n\n'}
-            🎵 {music[0][0]} - {music[0][1]}{'\n\n'}
-            🎵 {music[1][0]} - {music[1][1]}{'\n\n'}
-            🎵 {music[2][0]} - {music[2][1]}{'\n\n'}
 
+          </Text>
+
+          <Text
+            style={styles.musictxt}
+            onPress={() => Linking.openURL('https://www.youtube.com/results?search_query='+music[0][0]+' '+music[0][1])}
+          >🎵 {music[0][0]} - {music[0][1]}{'\n\n'}</Text>
+          <Text
+            style={styles.musictxt}
+            onPress={() => Linking.openURL('https://www.youtube.com/results?search_query='+music[1][0]+' '+music[1][1])}
+          >🎵 {music[1][0]} - {music[1][1]}{'\n\n'}</Text>
+          <Text
+            style={styles.musictxt}
+            onPress={() => Linking.openURL('https://www.youtube.com/results?search_query='+music[2][0]+' '+music[2][1])}
+          >🎵 {music[2][0]} - {music[2][1]}{'\n\n'}</Text>
+
+          <Text style={styles.decscontent}>
            노래를 들으며 달콤한 코코아차 한잔 어떠신가요? {'\n'}
            코코아는 아침 식전에 마시면 활력을 주는 역할을 합니다.
           어쩌구 저쩌구 어쩌구 궁시렁 궁시렁 
@@ -309,9 +344,26 @@ export default function ResultScreen(props) {
             onBackdropPress={()=>setModal(false)}
           >
             <View style={styles.qr}>
-              <View style={styles.qrmodal}>
-                <Text style={styles.qrtxt}>QR code</Text>
-              </View>
+              
+                {
+                  isreceived? (
+                    <View style={styles.qrreceived}>
+                      <LottieView 
+                      style={{width:80,height:80,marginBottom:20,}}
+                      source={require('../assets/img/sad.json')} autoPlay roof/>
+                    <Text style={styles.qrtxt}>선물은 하루에 한번만 제공됩니다!</Text>
+                    </View>
+                  ) : (
+                    <View style={styles.qrmodal}>
+                      <View>
+                        <QRCode
+                          value={qrvalue}
+                        />
+                      </View>
+                    <Text style={styles.qrtitle}>코드를 팔레트 자판기에 인식 시켜주세요!</Text>
+                    </View>
+                  )
+                }
             </View>
           </Modal>
           </TouchableOpacity>
@@ -323,6 +375,11 @@ export default function ResultScreen(props) {
 }
 
 const styles = StyleSheet.create({
+  pharsetxt: {
+    fontFamily : 'BMHANNAAir_ttf',
+    fontSize:13,
+
+  },
   top : {
     alignItems:"center",
     justifyContent:"center",
@@ -333,16 +390,31 @@ const styles = StyleSheet.create({
     marginBottom:40,
     marginTop:20,
   },
+  qrtitle :{
+    fontFamily : 'BMHANNAAir_ttf',
+    fontSize:15,
+    marginTop:20,
+  },
   qrtxt:{
     fontFamily : 'BMHANNAAir_ttf',
-    fontSize:19,
+    fontSize:16,
   },
-  qrmodal:{
+  qrreceived:{
     backgroundColor:'white',
-    height:400,
+    height:180,
     width:330,
     alignItems:"center",
     justifyContent:"center",
+    borderRadius:10,
+  },
+  qrmodal:{
+    backgroundColor:'white',
+    height:300,
+    width:330,
+    alignItems:"center",
+    justifyContent:"center",
+    borderRadius:10,
+
   },
   qr : {
     flex:1,
@@ -411,6 +483,11 @@ const styles = StyleSheet.create({
     marginTop:10,
     // backgroundColor:'red',
   },
+  musictxt:{
+    fontFamily : 'BMHANNAAir_ttf',
+    fontSize:13,
+    width:'100%'
+  },
   decscontent:{
     justifyContent: 'center',
     alignItems: 'center',
@@ -418,6 +495,7 @@ const styles = StyleSheet.create({
     fontSize:13,
     lineHeight:18,
     marginBottom:10,
+    width:'100%',
   },
   root: {
     flex: 1,
