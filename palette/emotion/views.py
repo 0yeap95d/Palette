@@ -150,9 +150,9 @@ def calendar(request):
 @api_view(['POST'])
 def save(request):
     print(request.data)
-    video = request.data.get('data').get('_parts')[0][1].get('uri')
-    print(video)
-    # video = 'file:///data/user/0/com.pal0/cache/Camera/dfb5018b-0624-4caa-9ac3-cc63ecdd8f96.mp4'
+    # video = request.data.get('data').get('_parts')[0][1].get('uri')
+    # print(video)
+    video = 'file:///data/user/0/com.pal0/cache/Camera/dfb5018b-0624-4caa-9ac3-cc63ecdd8f96.mp4'
 
     user = User.objects.all().filter(username=request.data.get('username'))
     if user:
@@ -666,29 +666,41 @@ def qr(request):
         print(nowT)
         if(time==nowT):
             check = 1
+
+            
     return Response({'check': check})
 
 
-
-@api_view(['GET'])
+@api_view(['POST'])
 def mk(request):
-    print(request.GET.get('username'))
-    username = request.GET.get('username')
-    user = User.objects.all().filter(username=username)
-    
-    record = Qr.objects.all().filter(userNo=user[0].pk).order_by('-date')[:1]
-    check = 0
-    if record :
-        time = record[0].date
-        date_str = time.strftime("%Y-%m-%d %H:%M:%S")
-        time = (str)(date_str)
-        time = time[0:10]
-        nowT = datetime.now()
-        date_str = nowT.strftime("%Y-%m-%d %H:%M:%S")
-        nowT = (str)(date_str)
-        nowT = nowT[0:10]
-        print(time)
-        print(nowT)
-        if(time==nowT):
-            check = 1
-    return Response({'check': check})
+    print(request.data)
+    user = User.objects.all().filter(username=request.data.get('username'))
+    if user:
+        record = Qr.objects.all().filter(userNo=user[0].pk).order_by('-date')[:1]
+        check = 0
+        if record :
+            time = record[0].date
+            date_str = time.strftime("%Y-%m-%d %H:%M:%S")
+            time = (str)(date_str)
+            time = time[0:10]
+            nowT = datetime.now()
+            date_str = nowT.strftime("%Y-%m-%d %H:%M:%S")
+            nowT = (str)(date_str)
+            nowT = nowT[0:10]
+            if(time==nowT):
+                check = 1
+            else:
+                user = get_object_or_404(User, pk=user[0].pk)
+                qr = Qr.objects.create(
+                        userNo = user,
+                    )
+                qr.save()
+        else :
+            user = get_object_or_404(User, pk=user[0].pk)
+            qr = Qr.objects.create(
+                    userNo = user,
+                )
+            qr.save()
+        return Response({'check': check})
+    else:
+        return Response({'check': 1})
