@@ -674,7 +674,10 @@ def qr(request):
 @api_view(['POST'])
 def mk(request):
     print(request.data)
-    user = User.objects.all().filter(username=request.data.get('username'))
+    username = request.data.get('username')
+    print(username)
+    print(username[0])
+    user = User.objects.all().filter(username=username)
     if user:
         record = Qr.objects.all().filter(userNo=user[0].pk).order_by('-date')[:1]
         check = 0
@@ -704,3 +707,4 @@ def mk(request):
         return Response({'check': check})
     else:
         return Response({'check': 1})
+
