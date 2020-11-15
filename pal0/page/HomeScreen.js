@@ -194,6 +194,7 @@ export default function MainScreen(props) {
 
             <View style={[{
               width: 20,
+              height: 20,
               backgroundColor: markColor[clickEmo]
             }]}>
             </View>
