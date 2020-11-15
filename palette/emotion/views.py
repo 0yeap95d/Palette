@@ -611,7 +611,10 @@ def result(request):
         text = random_text[:idx]
         where = random_text[idx+1:]
         comment = Result.objects.all().filter(moodType=num, resultType=3)
-        return Response({'emotions': emotion, 'finalEmotion': finalEmo, 'statistic' : statistic, 'text':[text,where], 'music':music, 'comment' : comment[0].content})
+        
+        reco = Result.objects.all().filter(moodType=fr, resultType=4)
+        
+        return Response({'emotions': emotion, 'finalEmotion': finalEmo, 'statistic' : statistic, 'text':[text,where], 'music':music, 'comment' : comment[0].content, 'reco':reco[0].content})
     else:
         return HttpResponse('noUser', status=400)
 
@@ -696,7 +699,12 @@ def qr(request):
         d = get_private_key(e, totient)
 
         encrypted_msg = encrypt((e,n), m)
-        send = ''.join(map(lambda x: str(x), encrypted_msg))
+        for i in encrypted_msg:
+            if send!='':
+                send = send+'/'+str(i)
+            else :
+                send = send+str(i)
+        # send = ''.join(map(lambda x: str(x), encrypted_msg))
             
     return Response({'check': send})
 
