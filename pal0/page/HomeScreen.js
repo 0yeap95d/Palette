@@ -18,6 +18,7 @@ calendarWidth: 350, 으로 변경해야함
 export default function MainScreen(props) {
 
   const markColor = [
+    'white',
     '#dba491',  // 분노, 주황
     '#b1c2ae',  // 혐오, 다크그린
     '#c6c1db',  // 두려움, 보라색 
@@ -28,7 +29,7 @@ export default function MainScreen(props) {
   ]
 
   const emotion = [
-    '결과없음',
+    '결과없음', 
     '분노',
     '혐오',
     '두려움',
@@ -79,7 +80,6 @@ export default function MainScreen(props) {
     console.log(datas);
     console.log(monthEmo);
     datas.forEach((data) => {
-      console.log(data);
       markList = {
         ...markList,
         [data[0]]: {

@@ -33,16 +33,6 @@ export function DrawerContent(props) {
                 label="통계"
                 labelStyle={styles.drawerItem}
                 onPress={() => {props.navigation.navigate('Chart')}}/>
-                  
-            <DrawerItem 
-                label="온 보드"
-                labelStyle={styles.drawerItem}
-                onPress={() => {props.navigation.navigate('Onboard')}}/>
-
-            <DrawerItem 
-                label="결과"
-                labelStyle={styles.drawerItem}
-                onPress={() => {props.navigation.navigate('Result')}}/>
           </Drawer.Section>
         </View>
       </DrawerContentScrollView>
