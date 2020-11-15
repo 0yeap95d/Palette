@@ -25,6 +25,8 @@ export default function ResultScreen(props) {
   const [gender,setGender] = useState(0);
   const [time,setTime] = useState(0);
   const [pharse,setPharse] = useState([]);
+  const [reco,setRecom] = useState(null);
+  const [nowtime,setnowtime] = useState(0);
   const {exitResult} = React.useContext(AuthContext);
   let [qrvalue,setqrvalue] = useState("qr")
 
@@ -73,7 +75,7 @@ export default function ResultScreen(props) {
     axios.get(`http://k3d102.p.ssafy.io:8000/emotion/qr/?username=${userId}`)
     .then(res =>{
       console.log(res.data)
-      if(res.data.check!=null) {
+      if(res.data.check!="") {
         setIsreceived(false)
         setqrvalue(res.data.check)
       
@@ -151,6 +153,11 @@ export default function ResultScreen(props) {
         setchartData(res.data.statistic.idx)
         setAge(res.data.statistic.age)
         setMusic(res.data.music)
+        setRecom(res.data.reco)
+
+
+        
+        setnowtime(new Date().getHours())
 
         if(res.data.statistic.gender == 1) {
           setGender("남성")
@@ -184,7 +191,12 @@ export default function ResultScreen(props) {
 
   if(loading) {
     return (
-      <View style={{flex:1,justifyContetn:'center',alignItems:'center'}}>
+      <ImageBackground
+      style={styles.content}
+      source={require("../assets/img/bg4.jpg")}
+      resizeMode="stretch"
+      >
+      <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
         {/* <ActivityIndicator size ="large"/> */}      
         <View style={styles.content}>
           <Text style={styles.txt}>당신의 상태를 확인 하는 중입니다.</Text>
@@ -193,25 +205,27 @@ export default function ResultScreen(props) {
           source={require('../assets/img/loader3.json')} autoPlay roof/>
         </View>
       </View>
+      </ImageBackground>
     );
   }
 
   return (
     <ScrollView  style={styles.root}>
-      <TouchableOpacity 
-        onPress={goHome}>
-          <Text>
-            홈으로 가기
-          </Text>
-      </TouchableOpacity>
+      
       <ImageBackground
         style={styles.content}
         source={require("../assets/img/bg4.jpg")}
         resizeMode="stretch"
       >
+        <TouchableOpacity 
+        onPress={goHome}
+        style={{width:'100%', }}
+        >
+          <Text style={styles.close}>닫기</Text>
+      </TouchableOpacity>
 {/* --------------감정색깔------------------------------ */}
         <View style={styles.top}>
-        <Text style={styles.toptxt}>당신의 결과는 ?</Text>
+        <Text style={styles.toptxt}>마음 팔레트</Text>
         </View>
         <View style={styles.emotioncolor}>
             <View style={styles.maincolor}>
@@ -244,42 +258,45 @@ export default function ResultScreen(props) {
         <View style={styles.decs}> 
           <Text style={styles.decstitle}>{totalMood}</Text>
           <Text style={styles.decscontent}>
-            {moodComment}{'\n\n'}
+            {moodComment}{'\n'}
           </Text>
         </View>
 {/* ------------추천 리스트-------------------------- */}
         <View style={styles.decs}>
         <Text style={styles.decstitle}>당신을 위한 추천리스트</Text>
-          <Text style={styles.decscontent}>
-            당신을 위해 노래를 준비했어요! {'\n'}
-            울적함을 달래고 에너지를 줄 수 있길 바라요. {'\n\n'}
+          
 
+          <Text style={styles.decscontent}>
+            저희가 추천한 노래를 들어보세요!{'\n'}
+            바쁜 일상을 잠시 내려놓고, 나의 감정에 귀 기울이고 다독여주는 시간을 찾으실 수 있으면 좋겠습니다♡{'\n'}
           </Text>
 
           <Text
             style={styles.musictxt}
             onPress={() => Linking.openURL('https://www.youtube.com/results?search_query='+music[0][0]+' '+music[0][1])}
-          >🎵 {music[0][0]} - {music[0][1]}{'\n\n'}</Text>
+          >🎧 {music[0][0]} - {music[0][1]}{'\n'}</Text>
           <Text
             style={styles.musictxt}
             onPress={() => Linking.openURL('https://www.youtube.com/results?search_query='+music[1][0]+' '+music[1][1])}
-          >🎵 {music[1][0]} - {music[1][1]}{'\n\n'}</Text>
+          >🎧 {music[1][0]} - {music[1][1]}{'\n'}</Text>
           <Text
             style={styles.musictxt}
             onPress={() => Linking.openURL('https://www.youtube.com/results?search_query='+music[2][0]+' '+music[2][1])}
-          >🎵 {music[2][0]} - {music[2][1]}{'\n\n'}</Text>
+          >🎧 {music[2][0]} - {music[2][1]}{'\n\n'}</Text>
 
-          <Text style={styles.pharsetxt}>
-            {pharse[0]}{'\n'} 
-          </Text>
-          <Text style={styles.pharsetxt}>
-            - {pharse[1]} - {'\n\n'}
-          </Text>
+          <Text style={{textAlign:'right',color:'gray',fontFamily:'Cafe24Oneprettynight',fontSize:11,width:'100%'}}>
+          {'<'}노래를 클릭해서 감상 해보세요{'>\n'}</Text>
+
+          <Text style={styles.decscontent}>
+            {'\n'}
+            {reco}</Text>
+          
+
         </View>
 
         
 {/* ------------성별,시간대,연령에 맞는 통계-------------------------- */}
-        <Text style={styles.avgtitle}>{time}시, {age}0대 {gender}들의 결과는?</Text>
+        <Text style={styles.avgtitle}>{nowtime}시, {age}0대 {gender}들의 결과는?</Text>
           <View style={styles.avgresult}>
           <View style={styles.avgchart}>
           <BarChart
@@ -310,6 +327,8 @@ export default function ResultScreen(props) {
             onPress={toggleModal}
           >
           <Text style={styles.btntxt}>🎁선물 받기🎁</Text>
+
+          
           <Modal isVisible={isModal}
             onBackdropPress={()=>setModal(false)}
           >
@@ -337,6 +356,18 @@ export default function ResultScreen(props) {
             </View>
           </Modal>
           </TouchableOpacity>
+
+
+          <View style={styles.pharsebox}>
+            <Text style={styles.pharsetxt}>
+              "{pharse[0]}"{'\n'} 
+            </Text>
+            <Text style={styles.pharsetxt}>
+              - {pharse[1]} - 
+            </Text>
+          </View>
+
+
         </View>
         </View>
         </ImageBackground>
@@ -345,6 +376,24 @@ export default function ResultScreen(props) {
 }
 
 const styles = StyleSheet.create({
+  close:{
+    fontFamily : 'Cafe24Oneprettynight',
+    fontSize:18,
+    textAlign: "right",
+    padding:15,
+    color:'gray'
+    
+  },
+  pharsebox: {
+    padding:30,
+    width:300,
+    marginTop:60,
+    borderTopColor:'#c9cdd2',
+    borderBottomColor:'#c9cdd2',
+    borderRightColor:'transparent',
+    borderLeftColor:'transparent',
+    borderWidth:0.2
+  },
   pharsetxt: {
     fontFamily : 'Cafe24Oneprettynight',
     fontSize:13,
@@ -428,15 +477,15 @@ const styles = StyleSheet.create({
     borderRadius:25,
     height:230,
     width:330,
-    borderColor:'gray',
+    borderColor:'#dbdde1',
     paddingTop:10,
   },
   avgtitle:{
     fontFamily : 'Cafe24Oneprettynight',
     fontSize:13,
     fontWeight:'bold',
-    marginBottom:7,
-    marginTop:30,
+    marginBottom:18,
+    marginTop:40,
 
   },
   decstitle:{
@@ -495,6 +544,7 @@ const styles = StyleSheet.create({
     width:250,
     alignItems:"center",
     justifyContent: 'center',
+    marginBottom:-35,
   },
   anothercolor:{
     flexDirection:'row',

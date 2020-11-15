@@ -17,7 +17,7 @@ export default function CameraScreen(props) {
   // const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isRecord,setIsRecord] = useState(false);
-  const buttonLabel = isRecord ? 'Stop' : 'Start';
+  const buttonLabel = isRecord ? '끝내기' : '말하기';
   let [userToken, setUserToken] = useState(null);
   let getuserId = null;
   let [Qnum, setNum] = useState(1);
@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: 'rgba(256,256,256,0.7)',
     borderRadius: 20,
   },
   btns:{
@@ -257,10 +257,13 @@ const styles = StyleSheet.create({
     width: 300,
   },  
   nextBtn:{
-    width:50,
+    width:70,
+    textAlign:'center',
     backgroundColor:"#c6c1db",
     borderRadius:50,
-    height:50,
+    height:30,
+    marginTop:10,
+    marginBottom:10,
     alignItems:"center",
     justifyContent:"center",
   },
