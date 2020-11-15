@@ -4,15 +4,22 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Voice from 'react-native-voice'
 import axios from 'axios';
 import {AuthContext} from '../src/context'
+import {RNCamera} from 'react-native-camera'
 
 
 export default function CameraScreen(props) {
+
+  const [recording, setRecording] = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const [camera, setCamera] = useState(false);
+  const ENDPOINT = 'http://k3d102.p.ssafy.io:8000/emotion/save/';
+
   // const [userId, setUserId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isRecord,setIsRecord] = useState(false);
   const buttonLabel = isRecord ? 'Stop' : 'Start';
+  let [userToken, setUserToken] = useState(null);
   let getuserId = null;
-  let [Qcount, setCount] = useState(30);
   let [Qnum, setNum] = useState(1);
   let [errormsg, setError] = useState('');
   let [questions, setQuestions] = useState(`최근에는 어떠한 기분을 가지고 생활하셨는지${'\n'} 상세하게 설명해주세요`);
@@ -28,12 +35,16 @@ export default function CameraScreen(props) {
   const _onSpeechStart = () => {
     console.log('--녹음 시작--');
     console.log(getuserId)
-    setError('');
+    setError('')
   };
+
   const _onSpeechEnd = () => {
     console.log('--녹음 끝--');
   };
+
   const _onSpeechResults = (event) => {
+    console.log(event)
+    console.log('결과????')
     setLoading(true)
     num = num +1;
     if(num>3){
@@ -59,9 +70,8 @@ export default function CameraScreen(props) {
     }).catch(err =>{
         console.log(err)
     })
-
-
   };
+
   const _onSpeechError = (event) => {
     console.log('_onSpeechError');
     console.log(event.error.message);
@@ -69,17 +79,63 @@ export default function CameraScreen(props) {
   }
 
   const _onRecordVoice = () => {
-    if (isRecord) {
-      Voice.stop();
-    } else {
+    console.log("voice");
+    _startRecording()
+    if (isRecord) { 
+      Voice.stop(); 
+    } 
+    else { 
       Voice.start('ko-KR');
     }
     setIsRecord(!isRecord);
   };
 
+  const _startRecording = async () => {
+    console.log("camera " + userToken);
+    if (recording) {
+      camera.stopRecording();
+      setRecording(false);
+      return;
+    }
+
+    setRecording(true);
+    const { uri, codec = "mp4" } = await camera.recordAsync();
+    console.log(uri);
+    setRecording(false);
+
+
+    setProcessing(true);
+
+    const type = `video/${codec}`;
+    const data = new FormData();
+
+    data.append("video", {
+      name: "mobile",
+      type,
+      uri,
+    });
+    data.append("username", userToken)
+    
+
+    try {
+      await fetch(ENDPOINT, {
+        method: "post",
+        body: data,
+      });
+    } catch (e) {
+        console.error(e);
+    }
+
+    console.log(data._parts[0][1]);
   
+    setProcessing(false);
+  }
 
   useEffect(() => {
+    AsyncStorage.getItem('userId', (err, userId) => {
+      userToken = setUserToken(userId);
+    });
+
     if(getuserId==null){
     setTimeout(async() => {
       try {
@@ -91,6 +147,7 @@ export default function CameraScreen(props) {
       }
     }, 1000);
     }
+
     Voice.onSpeechStart = _onSpeechStart;
     Voice.onSpeechEnd = _onSpeechEnd;
     Voice.onSpeechResults = _onSpeechResults;
@@ -103,7 +160,27 @@ export default function CameraScreen(props) {
   return (
     <View style={styles.root}>
       <View style={styles.camera}>
-        <Text style={styles.txt}>Campage</Text>
+        <RNCamera
+          ref={ref => {
+            setCamera(ref)
+          }}
+          style={{ width: 370, height: '100%'}}
+          type={RNCamera.Constants.Type.front}
+          flashMode={RNCamera.Constants.FlashMode.on} 
+          captureAudio={false}
+          androidCameraPermissionOptions={{
+            title: 'Permission to use camera',
+            message: 'We need your permission to use your camera',
+            buttonPositive: 'Ok',
+            buttonNegative: 'Cancel',
+          }}
+          androidRecordAudioPermissionOptions={{
+            title: 'Permission to use audio recording',
+            message: 'We need your permission to use your audio',
+            buttonPositive: 'Ok',
+            buttonNegative: 'Cancel',
+          }}
+        />
       </View>
 
       <View style={styles.message}>
@@ -120,16 +197,15 @@ export default function CameraScreen(props) {
             <View style={styles.btns}>
               <Text style={styles.txt}>Q{Qnum}.</Text>
               <Text style={styles.txt}>{questions}</Text>
-            {/* <Text style={styles.txt}>⏱:{Qcount}</Text> */}
             </View>
             <View style={styles.btns}>
               <TouchableOpacity 
               style={styles.nextBtn}
               onPress={_onRecordVoice}
               >
-              <Text style={styles.txt}>{buttonLabel}</Text>
+              <Text style={styles.txt2}>{buttonLabel}</Text>
               </TouchableOpacity>
-          </View>
+            </View>
           </>
           )
         }
@@ -138,10 +214,19 @@ export default function CameraScreen(props) {
 
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
+  capture: {
+    flex: 0,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    padding: 15,
+    paddingHorizontal: 20,
+    alignSelf: 'center',
+    margin: 20,
+  },
   root: {
     flex: 1,
     justifyContent: 'center',
@@ -149,33 +234,42 @@ const styles = StyleSheet.create({
   },
   camera : {
     flex :4,
-    width: 350,
+    width: 370,
     marginTop:20,
     marginBottom:10,
-    backgroundColor: 'yellow'
+    backgroundColor: 'white',
+    borderRadius: 20,
+    overflow: 'hidden'
   },
   message :{
     flex:1,
-    width: 350,
+    width: 370,
     marginBottom:10,
+    marginTop: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'green',
+    backgroundColor: 'white',
+    borderRadius: 20,
   },
   btns:{
     flexDirection:'row',
     justifyContent: 'center',
+    width: 300,
   },  
   nextBtn:{
     width:50,
-    backgroundColor:"#C8B6E5",
+    backgroundColor:"#c6c1db",
     borderRadius:50,
     height:50,
     alignItems:"center",
     justifyContent:"center",
   },
   txt:{
-    color:"white",
-    fontFamily : 'BMHANNAAir_ttf'
+    color:"black",
+    fontFamily : 'Cafe24Oneprettynight',
+  },
+  txt2: {
+    color: "white",
+    fontFamily : 'Cafe24Oneprettynight',
   }
 });

@@ -6,7 +6,7 @@ import {AuthContext} from '../src/context'
 import LottieView from 'lottie-react-native';
 import Modal from 'react-native-modal'
 import {BarChart} from 'react-native-chart-kit'
-import { color } from 'react-native-reanimated';
+import { color, min } from 'react-native-reanimated';
 import QRCode from 'react-native-qrcode-svg'
 
 export default function ResultScreen(props) {
@@ -56,21 +56,6 @@ export default function ResultScreen(props) {
     fillShadowGradientOpacity: 1, // THIS
   };
 
-  // 암호화 aes 
-  var Aes = NativeModules.Aes
- 
-  const generateKey = (password, salt, cost, length) => Aes.pbkdf2(password, salt, cost, length)
-   
-  const encryptData = (text, key) => {
-      return Aes.randomKey(16).then(iv => {
-          return Aes.encrypt(text, key, iv).then(cipher => ({
-              cipher,
-              iv,
-          }))
-      })
-  }
-
-  const decryptData = (encryptedData, key) => Aes.decrypt(encryptedData.cipher, key, encryptedData.iv)
 
   const toggleModal = () => {
     console.log('큐알코드~?')
@@ -86,24 +71,10 @@ export default function ResultScreen(props) {
     console.log(qrstring)
     axios.get(`http://k3d102.p.ssafy.io:8000/emotion/qr/?username=${userId}`)
     .then(res =>{
-      if(res.data.check==0) {
+      console.log(res.data)
+      if(res.data.check!=null) {
         setIsreceived(false)
-      
-        try {
-          generateKey('palette', 'emotion', 5000, 256).then(key => {
-            console.log('Key:', key)
-            encryptData(qrstring, key)
-              .then(({ cipher, iv }) => {
-                  console.log('Encrypted:', cipher)
-                  setqrvalue(cipher)
-              })
-              .catch(error => {
-                  console.log(error)
-              })
-          })
-      } catch (e) {
-          console.error(e)
-      }
+        setqrvalue(res.data.check)
       
       } //선물 안 받은거
       else setIsreceived(true) //선물 받았음
@@ -270,14 +241,8 @@ export default function ResultScreen(props) {
         <View style={styles.decs}> 
           <Text style={styles.decstitle}>{totalMood}</Text>
           <Text style={styles.decscontent}>
-            {moodComment}
+            {moodComment}{'\n\n'}
           </Text>
-            <Text style={styles.pharsetxt}>
-            {pharse[0]} 
-            </Text>
-            <Text style={styles.pharsetxt}>
-            - {pharse[1]} -
-            </Text>
         </View>
 {/* ------------추천 리스트-------------------------- */}
         <View style={styles.decs}>
@@ -301,12 +266,14 @@ export default function ResultScreen(props) {
             onPress={() => Linking.openURL('https://www.youtube.com/results?search_query='+music[2][0]+' '+music[2][1])}
           >🎵 {music[2][0]} - {music[2][1]}{'\n\n'}</Text>
 
-          <Text style={styles.decscontent}>
-           노래를 들으며 달콤한 코코아차 한잔 어떠신가요? {'\n'}
-           코코아는 아침 식전에 마시면 활력을 주는 역할을 합니다.
-          어쩌구 저쩌구 어쩌구 궁시렁 궁시렁 
+          <Text style={styles.pharsetxt}>
+            {pharse[0]}{'\n'} 
+          </Text>
+          <Text style={styles.pharsetxt}>
+            - {pharse[1]} - {'\n\n'}
           </Text>
         </View>
+
         
 {/* ------------성별,시간대,연령에 맞는 통계-------------------------- */}
         <Text style={styles.avgtitle}>{time}시, {age}0대 {gender}들의 결과는?</Text>
@@ -376,27 +343,27 @@ export default function ResultScreen(props) {
 
 const styles = StyleSheet.create({
   pharsetxt: {
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:13,
-
+    textAlign: "center"
   },
   top : {
     alignItems:"center",
     justifyContent:"center",
   },
   toptxt: {
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:35,
     marginBottom:40,
     marginTop:20,
   },
   qrtitle :{
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:15,
     marginTop:20,
   },
   qrtxt:{
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:16,
   },
   qrreceived:{
@@ -433,7 +400,7 @@ const styles = StyleSheet.create({
   },
   btntxt :{
     color:"white",
-    fontFamily : 'BMHANNAAir_ttf'
+    fontFamily : 'Cafe24Oneprettynight'
   },
   present : {
     marginTop:30,
@@ -442,7 +409,7 @@ const styles = StyleSheet.create({
   },
   presenttxt : {
     fontSize:12,
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
   },  
   decswrap: {
     width:'100%',
@@ -462,7 +429,7 @@ const styles = StyleSheet.create({
     paddingTop:10,
   },
   avgtitle:{
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:13,
     fontWeight:'bold',
     marginBottom:7,
@@ -471,7 +438,7 @@ const styles = StyleSheet.create({
   },
   decstitle:{
     width:260,
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:15,
     fontWeight:'bold',
     marginBottom:7,
@@ -484,14 +451,14 @@ const styles = StyleSheet.create({
     // backgroundColor:'red',
   },
   musictxt:{
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:13,
     width:'100%'
   },
   decscontent:{
     justifyContent: 'center',
     alignItems: 'center',
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:13,
     lineHeight:18,
     marginBottom:10,
@@ -548,10 +515,10 @@ const styles = StyleSheet.create({
     color:'white',
     fontSize:22,
     // fontWeight:'bold',
-    fontFamily : 'BMHANNAAir_ttf'
+    fontFamily : 'Cafe24Oneprettynight'
   },
   txt:{
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:17,
   }
 });

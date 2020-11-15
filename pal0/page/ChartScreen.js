@@ -195,13 +195,13 @@ export default function ChartScreen(props) {
 
 
 {/* ---------------전체 차트-------------------------- */}
-        <Text style={styles.mainheadertxt}>'{toptotal}'을 가장 많이 느끼고 있어요</Text>
-        <View style={styles.totalbox}>
-            <View style={{flexDirection:'row',height:180,alignItems:'flex-end'}}>{totaldata}</View>
-            <View style={{flexDirection:'row',alignItems:'flex-end'}}>{totallabel}</View>
-        </View>
+    <Text style={styles.mainheadertxt}>'{toptotal}'을 가장 많이 느끼고 있어요</Text>
+    <View style={styles.totalbox}>
+        <View style={{flexDirection:'row',height:180,alignItems:'flex-end'}}>{totaldata}</View>
+        <View style={{flexDirection:'row',alignItems:'flex-end'}}>{totallabel}</View>
+    </View>
 {/* -------------성별 차트---------------------- */}
-   <Text style={styles.headertxt}>여자는 '{womantotal}', 남자는 '{mantotal}'</Text>
+    <Text style={styles.headertxt}>여자는 '{womantotal}', 남자는 '{mantotal}'</Text>
         <View style={styles.peoplebox}>
             <View style={styles.people}>
                 <Image style={styles.peopleimg} 
@@ -228,7 +228,8 @@ export default function ChartScreen(props) {
     <View style={styles.etcbox}>
     <View style={{width:'90%',alignItems: 'flex-end',flexDirection:'row',justifyContent:'center'}}>
             <Picker
-                style={{flex:1,height:40,borderColor:'black',borderWidth:1,}}
+                style={{flex:1,height:40,borderColor:'black', borderWidth: 1 }}
+                itemTextStyle={{fontSize: 50, fontFamily: "Cafe24Oneprettynight"}}
                 selectedValue={age}
                 onValueChange={(v)=>{
                     setAge(v)
@@ -274,7 +275,7 @@ export default function ChartScreen(props) {
 
     </View>
 
-    <View style={{marginBottom:30,}}></View>
+    <View style={{marginBottom:10,}}></View>
 
     </ImageBackground>
     </ScrollView>
@@ -286,20 +287,19 @@ headerstyle:{
     height:150,
 },
 mainheadertxt:{
-    fontFamily: 'BMHANNAAir_ttf',
+    fontFamily: 'Cafe24Oneprettynight',
     fontSize: 18,
-    fontWeight:'bold',
     width:'90%',
-    marginTop:10,
+    marginTop:20,
+    marginBottom: 5,
     paddingTop:10,
 },
 headertxt:{
-    fontFamily: 'BMHANNAAir_ttf',
+    fontFamily: 'Cafe24Oneprettynight',
     fontSize: 18,
-    fontWeight:'bold',
     width:'90%',
     marginTop:10,
-    paddingTop:10,
+    paddingTop:20,
     borderTopColor:'gray',
     borderBottomColor:'transparent',
     borderRightColor:'transparent',
@@ -326,13 +326,13 @@ etcinner : {
     flexDirection:'row'
 },
 totallabeltext: {
-    fontFamily: 'BMHANNAAir_ttf',
+    fontFamily: 'Cafe24Oneprettynight',
     fontSize: 11,
     marginLeft: 7,
     marginTop: 10,
 },
 labeltxt: {
-    fontFamily: 'BMHANNAAir_ttf',
+    fontFamily: 'Cafe24Oneprettynight',
     fontSize: 10
 },
 fivelabel: { //라벨 개별
@@ -381,18 +381,19 @@ totalbox: {
     height: 200,
     backgroundColor:'rgba(256,256,256,0.8)',
     marginTop: 10,
+    marginBottom: 10,
     paddingBottom:8,
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
 },
 womantxt: {
-    fontFamily: 'BMHANNAAir_ttf',
+    fontFamily: 'Cafe24Oneprettynight',
     marginTop: 5,
     color: '#eda6b3'
 },
 mantxt: {
-    fontFamily: 'BMHANNAAir_ttf',
+    fontFamily: 'Cafe24Oneprettynight',
     marginTop: 5,
     color: '#85baaf'
 },

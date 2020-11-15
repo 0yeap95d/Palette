@@ -20,14 +20,11 @@ export default function JoinScreen(props) {
 
     let pknum = 0;
 
-    const updateSecureTextEntry = () =>{
-        setSecure(!secureTextEntry)
-    }
+    const updateSecureTextEntry = () =>{ setSecure(!secureTextEntry) }
 
 
     const checkJoin = () => {
         console.log('-- 가입 정보 체크 -- ')
-    
         console.log(userId)
         console.log(userPw)
         console.log(age) 
@@ -111,12 +108,17 @@ export default function JoinScreen(props) {
 
 
   return (
-    <ScrollView  style={styles.root}>
+
+
+
+    <ScrollView style={styles.root}>
         <ImageBackground
             style={styles.content}
             source={require("../assets/img/bg4.jpg")}
             resizeMode="stretch">
-        <Text style={styles.welcometxt}>Welcome Palette</Text>
+
+
+        <Text style={styles.welcometxt}>Welcome</Text>
 
         <View style={styles.select}>
             <TouchableOpacity style={styles.sex}
@@ -243,7 +245,6 @@ const styles = StyleSheet.create({
         backgroundColor:'white'
     },
     root: {
-        flex: 1,
         width: '100%',
         flexDirection: 'column'
     },
@@ -253,8 +254,8 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
 welcometxt:{
-    fontFamily : "Golden Plains",
-    fontSize:40,
+    fontFamily : "Gellatio Regular",
+    fontSize:30,
     marginTop:40,
     marginBottom:40,
 },
@@ -289,10 +290,10 @@ nextbtn: {
 },
 loginText: {
     color: "white",
-    fontFamily: 'BMHANNAAir_ttf',
+    fontFamily: 'Cafe24Oneprettynight',
 },
 labels: {
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:16,
     marginRight:10,
     width:60,
@@ -328,7 +329,7 @@ picker : {
 },
 pickertxt :{
     width: '10%',
-    fontFamily : 'BMHANNAAir_ttf',
+    fontFamily : 'Cafe24Oneprettynight',
     fontSize:16
 }
 });

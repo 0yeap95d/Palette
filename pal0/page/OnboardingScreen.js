@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
+import { color } from 'react-native-reanimated';
 import {AuthContext} from '../src/context'
 
 
@@ -65,22 +66,26 @@ export default function CameraScreen(props)  {
         onDone={welcome}
         pages={[
           {
-            backgroundColor: '#e5c1c5',
+            backgroundColor: '#cc937c',
             image: <Image source={require('../assets/img/boarder1.png')} style={styles.imgcontainer} />,
             title: '팔레트에 오신것을 환영합니다!',
-            subtitle: '반갑습니당',
+            subtitle: 
+            '쉼 없이 달려가는 바쁜 일상 속, \n지친 내 감정은 잘 있나요?'
+            // '바쁘다는 핑계로 \n무심히 지나치곤 했던 사소한 감정들. \n\n' +
+            // '하나하나 다시 깨워서 \n물에 녹여보는 건 어떨까요.',
           },
           {
-            backgroundColor: '#f2eee5',
+            backgroundColor: '#8483a388',
             image: <Image source={require('../assets/img/boarder2.png')} style={styles.imgcontainer} />,
-            title: '간편하게 카메라로 감정을 측정해보세요!',
-            subtitle: '수리수리마수리',
+            title: '자신의 감정을 측정해보세요!',
+            subtitle: 
+            '카메라와 음성을 통해 감정을 측정하고 \n결과를 받아볼 수 있어요!'
           },
           {
-            backgroundColor: '#c3e2dd44',
+            backgroundColor: 'white',
             image: <Image source={require('../assets/img/boarder3.png')}  style={styles.imgcontainer}/>,
-            title: '알록달록',
-            subtitle: "콩쥐팥쥐",
+            title: '같이 색칠해볼까요?',
+            subtitle: "바쁘다는 핑계로 \n무심히 지나치곤 했던 사소한 감정들.\n\n하나하나 다시 깨워서\n 물에 녹여보는 건 어떨까요.",
           },
         ]}
         containerStyles={styles.container}
@@ -110,15 +115,18 @@ const styles = StyleSheet.create({
     marginTop:-50,
   },
   title:{
-      fontFamily:'BMHANNAAir_ttf',
-      marginTop:-80
+      fontFamily:'Cafe24Oneprettynight',
+      marginTop:-80,
+      color: 'white',
+      fontSize: 24,
   },
   subtitle:{
-    fontFamily:'BMHANNAAir_ttf'
+    fontFamily:'Cafe24Oneprettynight',
+    color: 'white'
   },
   bottombtn:{
       fontSize:13,
-      fontFamily:'BMHANNAAir_ttf',
+      fontFamily:'Cafe24Oneprettynight',
 
   }
 

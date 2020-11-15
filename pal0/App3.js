@@ -107,7 +107,6 @@ const App = () => {
           return {
             ...prevState,
             onBoard:false,
-            // isLoading:true
           }  
         }
       };
@@ -205,17 +204,17 @@ const App = () => {
         source={require("./assets/img/mainbg.jpg")}
         resizeMode="stretch"
         >
-        <Text style={{height: 70,
+        <Text style={{height: 100,
         marginTop:180,
         alignItems: "center",
-        fontSize: 80,
-        fontFamily : "Golden Plains"}}>Palette</Text>
+        fontSize: 50,
+        fontFamily : "Gellatio Regular"}}>Palette</Text>
 
         <Text style={{
-          fontSize:22,
-          fontFamily:"Golden Plains",
-          marginTop:100,
-        }}>team</Text>
+          fontSize:15,
+          fontFamily:"Cafe24Oneprettynight",
+          marginLeft: 150,
+        }}>:너의 마음이 보여</Text>
         </ImageBackground>
         </View>
       );
