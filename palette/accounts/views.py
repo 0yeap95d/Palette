@@ -30,7 +30,7 @@ def userinfo(request, user_pk):
 
 @api_view(['PUT'])
 def updated(request):
-    print(request.data)
+    #print(request.data)
     pk = request.data['params']['pk']
     user = get_object_or_404(User, pk=pk)
 
