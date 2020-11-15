@@ -133,7 +133,7 @@ def calendar(request):
             arr.sort(reverse=True)
             fr = arr2.index(arr[0])
             
-            cnt[month-1][fr-1][1] += 1
+            cnt[month-1][fr][1] += 1
 
             cl=[time, fr]
             et.append(cl)
