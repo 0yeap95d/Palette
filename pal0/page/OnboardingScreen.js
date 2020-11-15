@@ -67,8 +67,6 @@ export default function CameraScreen(props)  {
             title: '팔레트에 오신것을 환영합니다!',
             subtitle: 
             '쉼 없이 달려가는 바쁜 일상 속, \n지친 내 감정은 잘 있나요?'
-            // '바쁘다는 핑계로 \n무심히 지나치곤 했던 사소한 감정들. \n\n' +
-            // '하나하나 다시 깨워서 \n물에 녹여보는 건 어떨까요.',
           },
           {
             backgroundColor: '#4b4766',
