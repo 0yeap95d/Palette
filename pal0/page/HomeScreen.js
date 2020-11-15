@@ -76,60 +76,24 @@ export default function MainScreen(props) {
   const [curMonth, setCurMonth] = useState(null);
 
   const setMarkedDates = (datas) => {
+    console.log(datas);
+    console.log(monthEmo);
     datas.forEach((data) => {
-      // markList = {
-      //   ...markList,
-      //   [data[0]]: {
-      //     customStyles: {
-      //       container: {
-      //         backgroundColor: markColor[data[1]]
-      //       },
-      //       text: {
-      //         color: 'white',
-      //         fontWeight: 'bold'
-      //       }
-      //     }
-      //   }
-      // }
-
+      console.log(data);
       markList = {
-        '2020-11-01': { customStyles: { 
-            container: { backgroundColor: markColor[0] },
-            text: { color: 'white', fontWeight: 'bold' }
+        ...markList,
+        [data[0]]: {
+          customStyles: {
+            container: {
+              backgroundColor: markColor[data[1]]
+            },
+            text: {
+              color: 'white',
+              fontWeight: 'bold'
             }
-        },
-        '2020-11-02': { customStyles: { 
-          container: { backgroundColor: markColor[1] },
-          text: { color: 'white', fontWeight: 'bold' }
           }
-        },
-        '2020-11-03': { customStyles: { 
-          container: { backgroundColor: markColor[2] },
-          text: { color: 'white', fontWeight: 'bold' }
-          }
-        },
-        '2020-11-04': { customStyles: { 
-          container: { backgroundColor: markColor[3] },
-          text: { color: 'white', fontWeight: 'bold' }
-          }
-        },
-        '2020-11-05': { customStyles: { 
-          container: { backgroundColor: markColor[4] },
-          text: { color: 'white', fontWeight: 'bold' }
-          }
-        },
-        '2020-11-06': { customStyles: { 
-          container: { backgroundColor: markColor[5] },
-          text: { color: 'white', fontWeight: 'bold' }
-          }
-        },
-        '2020-11-07': { customStyles: { 
-          container: { backgroundColor: markColor[6] },
-          text: { color: 'white', fontWeight: 'bold' }
-          }
-        },
+        }
       }
-
     })
     setMarkList(markList)
   }
@@ -138,7 +102,8 @@ export default function MainScreen(props) {
     await axios.get(`http://k3d102.p.ssafy.io:8000/emotion/calendar/?username=${userToken}`
         ).then(res => { 
           setMonthEmo(res.data.count);
-          setMarkedDates(res.data.emotions) 
+          setMarkedDates(res.data.emotions);
+          console.log(monthEmo);
         }
         ).catch(err => { console.log(err) }
     )
@@ -171,14 +136,13 @@ export default function MainScreen(props) {
 
         {/* calendar */}
         <View style={{
-          flex: 5,
+          flex: 7,
           justifyContent: 'center',
           alignItems: 'center',
         }}>
           <View style={styles.calView}>
             <Text style={{
               fontFamily: 'Cafe24Oneprettynight' ,
-              paddingTop: 15,
               paddingEnd: 15,
               width: '100%',
               justifyContent: 'flex-end',
@@ -189,7 +153,7 @@ export default function MainScreen(props) {
               
               horizontal={true}
               pagingEnabled={true}
-              pastScrollRange={24}
+              pastScrollRange={11}
               futureScrollRange={0}
 
               markingType={'custom'}
@@ -270,7 +234,7 @@ const styles = StyleSheet.create({
   calView: {
     backgroundColor: 'white',
     borderRadius: 20,
-    width: 350,
+    width: "100%",
     height: 370,
   },
   calContainer: {

@@ -1,30 +1,26 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
-import { color } from 'react-native-reanimated';
 import {AuthContext} from '../src/context'
 
-
-
-
 export default function CameraScreen(props)  {
-    const Dots = ({selected}) => {
-        let backgroundColor;
+  const Dots = ({selected}) => {
+    let backgroundColor;
     
-        backgroundColor = selected ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.3)';
+    backgroundColor = selected ? 'rgba(0, 0, 0, 0.8)' : 'rgba(0, 0, 0, 0.3)';
     
-        return (
-            <View 
-                style={{
-                    width:6,
-                    height: 6,
-                    borderRadius:30,
-                    marginHorizontal: 3,
-                    backgroundColor
-                }}
-            />
-        );
-    }
+    return (
+      <View 
+          style={{
+              width:6,
+              height: 6,
+              borderRadius:30,
+              marginHorizontal: 3,
+              backgroundColor
+          }}
+      />
+    );
+  }
     
     const Skip = ({...props}) => (
         <TouchableOpacity
@@ -66,7 +62,7 @@ export default function CameraScreen(props)  {
         onDone={welcome}
         pages={[
           {
-            backgroundColor: '#cc937c',
+            backgroundColor: '#353d52',
             image: <Image source={require('../assets/img/boarder1.png')} style={styles.imgcontainer} />,
             title: '팔레트에 오신것을 환영합니다!',
             subtitle: 
@@ -75,14 +71,14 @@ export default function CameraScreen(props)  {
             // '하나하나 다시 깨워서 \n물에 녹여보는 건 어떨까요.',
           },
           {
-            backgroundColor: '#8483a388',
+            backgroundColor: '#4b4766',
             image: <Image source={require('../assets/img/boarder2.png')} style={styles.imgcontainer} />,
             title: '자신의 감정을 측정해보세요!',
             subtitle: 
             '카메라와 음성을 통해 감정을 측정하고 \n결과를 받아볼 수 있어요!'
           },
           {
-            backgroundColor: 'white',
+            backgroundColor: '#625e66',
             image: <Image source={require('../assets/img/boarder3.png')}  style={styles.imgcontainer}/>,
             title: '같이 색칠해볼까요?',
             subtitle: "바쁘다는 핑계로 \n무심히 지나치곤 했던 사소한 감정들.\n\n하나하나 다시 깨워서\n 물에 녹여보는 건 어떨까요.",
@@ -93,7 +89,6 @@ export default function CameraScreen(props)  {
         subTitleStyles={styles.subtitle}
         bottomBarHighlight={false}
         bottomBarHeight={50}
-        // imageContainerStyles ={styles.imgcontainer}
       />
     );
 };
@@ -109,7 +104,6 @@ const styles = StyleSheet.create({
   imgcontainer:{
     width:350,
     height:350,
-    // backgroundColor:'red',
     resizeMode:'stretch',
     paddingBottom:0,
     marginTop:-50,
@@ -125,9 +119,8 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   bottombtn:{
-      fontSize:13,
-      fontFamily:'Cafe24Oneprettynight',
-
+    fontSize:13,
+    fontFamily:'Cafe24Oneprettynight',
+    color: 'white',
   }
-
 });
