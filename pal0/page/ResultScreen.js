@@ -16,6 +16,7 @@ export default function ResultScreen(props) {
   const [isModal,setModal] = useState(false);
   const [isreceived,setIsreceived] = useState(false);
   const [threeEmo,setThreeEmo] = useState([]);
+  const [threeColor,setThreecolor] = useState([]);
   const [totalMood,setTotalMood] = useState(null);
   const [moodComment,setMoodComment] = useState(null);
   const [music,setMusic] = useState([])
@@ -86,14 +87,13 @@ export default function ResultScreen(props) {
   }    // qr코드 모달 ~~~~
  
   const colorarr = [
-  require('../assets/img/color1.png'),
-  require('../assets/img/color2.png'),
-  require('../assets/img/color3.png'),
-  require('../assets/img/color4.png'),
-  require('../assets/img/color5.png'),
-  require('../assets/img/color6.png'),
-  require('../assets/img/color7.png'),]
-  let colorimg = [colorarr[0],colorarr[1],colorarr[2]];
+  require('../assets/img/color1.png'), //분노
+  require('../assets/img/color2.png'), //혐오
+  require('../assets/img/color3.png'), //두려움
+  require('../assets/img/color4.png'), //행복
+  require('../assets/img/color5_2.png'), //슬픔
+  require('../assets/img/color6_3.png'), //놀람
+  require('../assets/img/color7_2.png'),] //퍙범
   
 
   const goHome = () => {
@@ -108,34 +108,36 @@ export default function ResultScreen(props) {
         console.log(res.data)
         
         var emocolorarr = [];
+        var threecolorsrc = [];
         for(var i=0;i<3;i++){
+          console.log(i)
           switch(res.data.emotions[i][0]){
             case 0 :
-              colorimg[i] = colorarr[0]
+              threecolorsrc.push(colorarr[0])
               emocolorarr.push("분노")
               break;
             case 1 :
-              colorimg[i] = colorarr[1]
+              threecolorsrc.push(colorarr[1])
               emocolorarr.push("혐오")
               break;
             case 2 :
-              colorimg[i] = colorarr[2]
+              threecolorsrc.push(colorarr[2])
               emocolorarr.push("두려움")
               break;
             case 3 :
-              colorimg[i] = colorarr[3]
+              threecolorsrc.push(colorarr[3])
               emocolorarr.push("행복")
               break;
             case 4 :
-              colorimg[i] = colorarr[4]
+              threecolorsrc.push(colorarr[4])
               emocolorarr.push("슬픔")
               break;
             case 5 :
-              colorimg[i] = colorarr[5]
+              threecolorsrc.push(colorarr[5])
               emocolorarr.push("놀람")
               break;
             case 6 :
-              colorimg[i] = colorarr[6]
+              threecolorsrc.push(colorarr[6])
               emocolorarr.push("평범")
               break;
               
@@ -143,6 +145,7 @@ export default function ResultScreen(props) {
         }
         // console.log(emocolorarr)
         setThreeEmo(emocolorarr)
+        setThreecolor(threecolorsrc)
         setTotalMood(res.data.finalEmotion)         
         setMoodComment(res.data.comment)
         setchartData(res.data.statistic.idx)
@@ -214,7 +217,7 @@ export default function ResultScreen(props) {
             <View style={styles.maincolor}>
               <ImageBackground
               style={styles.imgs}
-              source={colorimg[0]} >
+              source={threeColor[0]} >
                 <Text style={styles.colortxt}>{threeEmo[0]}</Text>
               </ImageBackground>
             </View>
@@ -223,14 +226,14 @@ export default function ResultScreen(props) {
               <View style={styles.color}>
               <ImageBackground
                 style={styles.imgs}
-                source={colorimg[1]} >
+                source={threeColor[1]} >
                   <Text style={styles.colortxt}>{threeEmo[1]}</Text>
                 </ImageBackground>
               </View>
               <View style={styles.color}>
               <ImageBackground
                 style={styles.imgs}
-                source={colorimg[2]} >
+                source={threeColor[2]} >
                   <Text style={styles.colortxt}>{threeEmo[2]}</Text>
                 </ImageBackground>
               </View>
@@ -489,7 +492,7 @@ const styles = StyleSheet.create({
     // backgroundColor:'red'
   },
   maincolor:{
-    width:90,
+    width:250,
     alignItems:"center",
     justifyContent: 'center',
   },
@@ -498,7 +501,7 @@ const styles = StyleSheet.create({
   } ,
   imgs:{
     width:150,
-    height:130,
+    height:140,
     resizeMode:'stretch',
     alignItems:"center",
     justifyContent:"center",
