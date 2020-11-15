@@ -6,6 +6,8 @@ import {CalendarList} from 'react-native-calendars';
 
 export default function MainScreen(props) {
 
+  // 
+
   const markColor = [
     '#ffffff',
     '#dba491',  // 분노, 주황
@@ -62,8 +64,8 @@ export default function MainScreen(props) {
   ]
 
   let [markList, setMarkList] = useState(null);
-  let [dayEmo, setDayEmo] = useState(null);
-  let [clickEmo, setClickEmo] = useState(null)
+  let [dayEmo, setDayEmo] = useState({});
+  let [clickEmo, setClickEmo] = useState(null);
   const [monthEmo, setMonthEmo] = useState([0,0,0,0,0,0,0,0,0,0,0,0]);
   const [curMonth, setCurMonth] = useState(null);
 
@@ -71,14 +73,14 @@ export default function MainScreen(props) {
     datas.forEach((data) => {
       dayEmo = {
         ...dayEmo,
-        [data[0]]: data[1]
+        [data[0]]: data[1] + 1
       }
       markList = {
         ...markList,
         [data[0]]: {
           customStyles: {
             container: {
-              backgroundColor: markColor[data[1]]
+              backgroundColor: markColor[data[1] + 1]
             },
             text: {
               color: 'white',
@@ -150,11 +152,11 @@ export default function MainScreen(props) {
               onVisibleMonthsChange={(months) => { setCurMonth(months[0].month) }}
               onDayPress={(day) => {
                 var day = day.dateString
+                console.log(dayEmo[day]);
+                if (dayEmo[day] == undefined) return;
                 var colorIdx = dayEmo[day]
                 setClickEmo(colorIdx);
-                console.log(dayEmo);
-                // console.log(markColor[colorIdx])
-                // console.log(emotion[colorIdx])
+                console.log(emotion[clickEmo]); 
               }}
               
               // 캘린더의 여러 파트들에 스타일들을 지정해줄 수 있습니다. 기본값은 {}입니다.
@@ -200,12 +202,13 @@ export default function MainScreen(props) {
             </View>
             <Text style={{
               width: 50,
+              height: 20,
               fontFamily: 'Cafe24Oneprettynight' ,
               fontSize: 15,
               justifyContent: 'center',
               alignContent: 'center',
               textAlign: 'center',
-              padding: 2
+              padding: 2,
             }}>{emotion[clickEmo]}</Text>
           </View>
         </View>

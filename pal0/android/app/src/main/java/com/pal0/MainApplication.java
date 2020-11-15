@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
-import com.tectiv3.aes.RCTAesPackage;
 import com.horcrux.svg.SvgPackage;
 import com.airbnb.android.react.lottie.LottiePackage;
 import com.wenkesj.voice.VoicePackage;
