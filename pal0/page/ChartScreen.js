@@ -174,11 +174,15 @@ export default function ChartScreen(props) {
 
     if(loading) {
         return (
-          <View style={{flex:1,justifyContetn:'center',alignItems:'center'}}>
-            {/* <ActivityIndicator size ="large"/> */}      
-              <LottieView 
-              source={require('../assets/img/loader3.json')} autoPlay roof/>
-          </View>
+        <ImageBackground
+        style={styles.content}
+        source={require("../assets/img/bg4.jpg")}
+        resizeMode="stretch"
+        >
+            <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+            <Text style={styles.loadtext}>통계를 불러오는 중이에요...</Text>
+            </View>
+        </ImageBackground>
         );
       }
 
@@ -283,6 +287,11 @@ export default function ChartScreen(props) {
 }
 
 const styles = StyleSheet.create({ 
+loadtext:{
+    fontFamily: 'Cafe24Oneprettynight',
+    fontSize:20,
+    color:'gray'
+},
 headerstyle:{
     height:150,
 },
