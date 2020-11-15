@@ -149,7 +149,7 @@ def calendar(request):
 # 결과 저장하면서 그 결과 보내주기
 @api_view(['POST'])
 def save(request):
-    print(request.data)
+    # print(request.data)
     video = request.FILES['video'].file
 
     user = User.objects.all().filter(username=request.data.get('username'))
@@ -217,8 +217,8 @@ def save(request):
             if (process_time >= duration - 1):
                 break
         cap.release()
-        print('cnt',cnt)
-        print('emotionValues',emotionValues)
+        # print('cnt',cnt)
+        # print('emotionValues',emotionValues)
         # 총 감정 분석해줄 영상 받기
         user = get_object_or_404(User, pk=user[0].pk)
         if cnt==0:
@@ -254,7 +254,7 @@ def save(request):
 @api_view(['POST'])
 @csrf_exempt
 def text(request):
-    print(request.data)
+    # print(request.data)
     stopwords = ['의','가','이','은','들','는','좀','잘','걍','과','도','를','으로','자','에','와','한','하다']
     X_dialog = stt.X_dialog
     tokenizer = Tokenizer()
@@ -301,25 +301,25 @@ def text(request):
             score_index = np.where(loaded_model.predict(pad_new)[0] == score)[0][0]
             if(score_index == 0):
                 emo= '혐오'
-                print("{:.2f}% 확률로 혐오 입니다.\n".format(score*100))
+                # print("{:.2f}% 확률로 혐오 입니다.\n".format(score*100))
             elif(score_index == 1):
                 emo = '중립'
-                print("{:.2f}% 확률로 중립 입니다.\n".format(score*100))
+                # print("{:.2f}% 확률로 중립 입니다.\n".format(score*100))
             elif(score_index == 2):
                 emo = '공포'
-                print("{:.2f}% 확률로 공포 입니다.\n".format(score*100))
+                # print("{:.2f}% 확률로 공포 입니다.\n".format(score*100))
             elif(score_index == 3):
                 emo = '놀람'
-                print("{:.2f}% 확률로 놀람 입니다.\n".format(score*100))
+                # print("{:.2f}% 확률로 놀람 입니다.\n".format(score*100))
             elif(score_index == 4):
                 emo = '분노'
-                print("{:.2f}% 확률로 분노 입니다.\n".format(score*100))
+                # print("{:.2f}% 확률로 분노 입니다.\n".format(score*100))
             elif(score_index == 5):
                 emo = '슬픔'
-                print("{:.2f}% 확률로 슬픔 입니다.\n".format(score*100))
+                # print("{:.2f}% 확률로 슬픔 입니다.\n".format(score*100))
             else:
                 emo = '행복'
-                print("{:.2f}% 확률로 행복 입니다.\n".format(score*100))
+                # print("{:.2f}% 확률로 행복 입니다.\n".format(score*100))
             mood1 = round(loaded_model.predict(pad_new)[0][4]*100,2)    #angry
             mood2 = round(loaded_model.predict(pad_new)[0][0]*100,2)    #disgust
             mood3 = round(loaded_model.predict(pad_new)[0][2]*100,2)    #fear
@@ -374,8 +374,8 @@ def text(request):
 
 @api_view(['GET'])
 def result(request):
-    print(request)
-    print(request.GET.get('username'))
+    # print(request)
+    # print(request.GET.get('username'))
     user = User.objects.all().filter(username=request.GET.get('username'))
     if user:
         emotion = Emotion.objects.all().filter(userNo=user[0].pk, option=2).order_by('-date')[:3]
@@ -525,6 +525,9 @@ def result(request):
             moodType = num
         )
         final.save()
+        print(fr,se,num)
+        fr += 1
+        se += 1
         ##################### 2차 감정 ################################
 
         ##################### 통계 ####################################
@@ -621,51 +624,117 @@ def apk(request):
 
 @api_view(['GET'])
 def qr(request):
-    print(request.GET.get('username'))
+
+
+    def gcd(a, b):
+        while b!=0:
+            a, b = b, a%b
+        return a
+
+    def encrypt(pk, plaintext):
+        key, n = pk
+        cipher = [(ord(char) ** key) % n for char in plaintext]
+        return cipher
+
+    def get_private_key(e, tot):
+        k=1
+        while (e*k)%tot != 1 or k == e:
+            k+=1
+        return k
+
+    def get_public_key(tot):
+        e=2
+        while e<totient and gcd(e, totient)!=1:
+            e += 1
+        return e
+    
+
+
+
+
+    # print(request.GET.get('username'))
     username = request.GET.get('username')
+    
     user = User.objects.all().filter(username=username)
     
     record = Qr.objects.all().filter(userNo=user[0].pk).order_by('-date')[:1]
+    final = Final.objects.all().filter(userNo=user[0].pk).order_by('-date')[:1]
+    emo = final[0].moodType
     check = 0
+    send = ''
     if record :
         time = record[0].date
         date_str = time.strftime("%Y-%m-%d %H:%M:%S")
         time = (str)(date_str)
-        time = time[0:10]
+        timeY = int(time[0:4])
+        timeM = int(time[5:7])
+        timeD = int(time[9:10])
+        timeH = int(time[11:13])
+
         nowT = datetime.now()
         date_str = nowT.strftime("%Y-%m-%d %H:%M:%S")
         nowT = (str)(date_str)
-        nowT = nowT[0:10]
-        print(time)
-        print(nowT)
-        if(time==nowT):
+        nowTY = int(nowT[0:4])
+        nowTM = int(nowT[5:7])
+        nowTD = int(nowT[9:10])
+        if timeY==nowTY and timeM==nowTM and timeD==nowTD:
             check = 1
+        else :
+            check = 0
+    if check==0:
+        m = username+'/'+str(emo)
 
+        p = 13
+        q = 23
+
+        n = p*q
+
+        totient = (p-1)*(q-1)
+
+        e = get_public_key(totient)
+
+        d = get_private_key(e, totient)
+
+        encrypted_msg = encrypt((e,n), m)
+        send = ''.join(map(lambda x: str(x), encrypted_msg))
             
-    return Response({'check': check})
+    return Response({'check': send})
 
 
 @api_view(['POST'])
 def mk(request):
-    print(request.data)
+    # print(request.data)
     username = request.data.get('username')
-    print(username)
+    # print(username)
     user = User.objects.all().filter(username=username)
     if user:
         record = Qr.objects.all().filter(userNo=user[0].pk).order_by('-date')[:1]
         check = 0
         if record :
             time = record[0].date
-            print(time)
             date_str = time.strftime("%Y-%m-%d %H:%M:%S")
             time = (str)(date_str)
-            time = time[0:10]
+            time2 = time[0:10]
+            # print(time2)
+            timeY = int(time[0:4])
+            timeM = int(time[5:7])
+            timeD = int(time[9:10])
+            timeH = int(time[11:13])
+            if(timeH>14):
+                timeD += 1
             nowT = datetime.now()
-            print(nowT)
             date_str = nowT.strftime("%Y-%m-%d %H:%M:%S")
             nowT = (str)(date_str)
-            nowT = nowT[0:10]
-            if(time==nowT):
+            nowT2 = nowT[0:10]
+            nowTY = int(nowT[0:4])
+            nowTM = int(nowT[5:7])
+            nowTD = int(nowT[9:10])
+            # print(time)
+            # print(nowT)
+            # print(timeY,timeM,timeD)
+            # print(nowTY,nowTM,nowTD)
+            # print(nowT)
+            if timeY==nowTY and timeM==nowTM and timeD==nowTD:
                 check = 1
             else:
                 user = get_object_or_404(User, pk=user[0].pk)

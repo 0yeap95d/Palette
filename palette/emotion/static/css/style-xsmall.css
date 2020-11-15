@@ -1,6 +1,6 @@
 @charset "UTF-8";
-/* @import url(font-awesome.min.css);
-@import url(http://fonts.googleapis.com/css?family=Raleway:700,400); */
+@import url(font-awesome.min.css);
+@import url(http://fonts.googleapis.com/css?family=Raleway:700,400);
 
 @font-face {
 	font-family: 'Cafe24Oneprettynight';
@@ -280,7 +280,8 @@
 			content: "";
 			-moz-osx-font-smoothing: grayscale;
 			-webkit-font-smoothing: antialiased;
-			font-family: 'Cafe24Oneprettynight';
+			/* font-family: 'Cafe24Oneprettynight'; */
+			font-family: FontAwesome;
 			font-style: normal;
 			font-weight: normal;
 			text-transform: none !important;
@@ -346,7 +347,8 @@
 			input[type="radio"] + label:before {
 				-moz-osx-font-smoothing: grayscale;
 				-webkit-font-smoothing: antialiased;
-				font-family: 'Cafe24Oneprettynight';
+				/* font-family: 'Cafe24Oneprettynight'; */
+				font-family: FontAwesome;
 				font-style: normal;
 				font-weight: normal;
 				text-transform: none !important;
@@ -448,7 +450,8 @@
 		.icon:before {
 			-moz-osx-font-smoothing: grayscale;
 			-webkit-font-smoothing: antialiased;
-			font-family: 'Cafe24Oneprettynight';
+			/* font-family: 'Cafe24Oneprettynight'; */
+			font-family: FontAwesome;
 			font-style: normal;
 			font-weight: normal;
 			text-transform: none !important;
@@ -1157,7 +1160,5 @@
 		}
 
 
-		* {
-			font-family: 'Cafe24Oneprettynight';
-		}
+	
 }
