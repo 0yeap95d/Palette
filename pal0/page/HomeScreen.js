@@ -4,21 +4,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import {CalendarList} from 'react-native-calendars';
 
-/* 
-✔ 주의사항!!!!
-
-경로 node_module / react-native-calendar / calendar-list / index.js
-
-calendarWidth: width, 에서
-calendarWidth: 350, 으로 변경해야함
-
-캘린더 width값이 고정되어있어서 이렇게 안하면 커스텀불가능😢
-*/
-
 export default function MainScreen(props) {
 
   const markColor = [
-    'white',
+    '#ffffff',
     '#dba491',  // 분노, 주황
     '#b1c2ae',  // 혐오, 다크그린
     '#c6c1db',  // 두려움, 보라색 
@@ -73,13 +62,17 @@ export default function MainScreen(props) {
   ]
 
   let [markList, setMarkList] = useState(null);
+  let [dayEmo, setDayEmo] = useState(null);
+  let [clickEmo, setClickEmo] = useState(null)
   const [monthEmo, setMonthEmo] = useState([0,0,0,0,0,0,0,0,0,0,0,0]);
   const [curMonth, setCurMonth] = useState(null);
 
   const setMarkedDates = (datas) => {
-    console.log(datas);
-    console.log(monthEmo);
     datas.forEach((data) => {
+      dayEmo = {
+        ...dayEmo,
+        [data[0]]: data[1]
+      }
       markList = {
         ...markList,
         [data[0]]: {
@@ -95,6 +88,8 @@ export default function MainScreen(props) {
         }
       }
     })
+
+    setDayEmo(dayEmo)
     setMarkList(markList)
   }
   
@@ -141,13 +136,6 @@ export default function MainScreen(props) {
           alignItems: 'center',
         }}>
           <View style={styles.calView}>
-            <Text style={{
-              fontFamily: 'Cafe24Oneprettynight' ,
-              paddingEnd: 15,
-              width: '100%',
-              justifyContent: 'flex-end',
-              textAlign: 'right'
-            }}></Text>
             <CalendarList
               style={styles.calContainer}
               
@@ -160,6 +148,14 @@ export default function MainScreen(props) {
               markedDates={markList}
 
               onVisibleMonthsChange={(months) => { setCurMonth(months[0].month) }}
+              onDayPress={(day) => {
+                var day = day.dateString
+                var colorIdx = dayEmo[day]
+                setClickEmo(colorIdx);
+                console.log(dayEmo);
+                // console.log(markColor[colorIdx])
+                // console.log(emotion[colorIdx])
+              }}
               
               // 캘린더의 여러 파트들에 스타일들을 지정해줄 수 있습니다. 기본값은 {}입니다.
               theme={{
@@ -186,7 +182,31 @@ export default function MainScreen(props) {
               }}
             />
           </View>
-          
+
+          <View style={{
+            marginEnd: 15,
+            marginTop: 10,
+            width: '100%',
+            flex: 1,
+            flexDirection: 'row',
+            justifyContent: 'flex-end'
+          }}>
+
+            <View style={[{
+              width: 20,
+              backgroundColor: markColor[clickEmo]
+            }]}>
+            </View>
+            <Text style={{
+              width: 50,
+              fontFamily: 'Cafe24Oneprettynight' ,
+              fontSize: 15,
+              justifyContent: 'center',
+              alignContent: 'center',
+              textAlign: 'center',
+              padding: 2
+            }}>{emotion[clickEmo]}</Text>
+          </View>
         </View>
 
           {/* contents */}
@@ -234,6 +254,7 @@ const styles = StyleSheet.create({
   calView: {
     backgroundColor: 'white',
     borderRadius: 20,
+    paddingTop: 10,
     width: "100%",
     height: 370,
   },
