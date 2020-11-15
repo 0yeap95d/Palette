@@ -28,7 +28,7 @@ export default function MainScreen(props){
 }
     return (
     <View style={styles.root}>
-      <ImageBackground 
+      {/* <ImageBackground 
       style={styles.content}
       source={require("../assets/img/main.png")}
       resizeMode="cover"
@@ -46,7 +46,7 @@ export default function MainScreen(props){
           </Text>
         </TouchableOpacity>
       </ImageBackground>
-      </ImageBackground>
+      </ImageBackground> */}
     </View>
   );
 

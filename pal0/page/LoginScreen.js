@@ -48,11 +48,8 @@ export default function LoginScreen(props) {
 
   return (
     <ScrollView style={styles.root}>
-      <ImageBackground
-        style={styles.content}
-        source={require("../assets/img/bg4.jpg")}
-        resizeMode="stretch">
           
+        <View style={{flex:1,width:'100%',justifyContent:'center',alignItems:'center'}}>
         <Text style={styles.logo}>Palette</Text>
         <Text style={{
           fontSize:15,
@@ -60,6 +57,9 @@ export default function LoginScreen(props) {
           marginLeft: 150,
           marginBottom: 130,
         }}>:너의 마음이 보여</Text>
+        </View>
+
+        <View style={{flex:1,width:'100%',justifyContent:'center',alignItems:'center'}}>
         <View style={styles.inputView} >
           <TextInput  
             style={styles.inputText}
@@ -77,7 +77,9 @@ export default function LoginScreen(props) {
             placeholderTextColor="#003f5c"
             onChangeText={userPw => setUserPw(userPw)}/>
         </View>
+        </View>
 
+        <View style={{flex:1,width:'100%',justifyContent:'center',alignItems:'center'}}>
         <TouchableOpacity 
         style={styles.loginBtn}
         onPress={goLogin}
@@ -91,7 +93,7 @@ export default function LoginScreen(props) {
           onPress={goSignup}
           >회원가입</Text>
         </TouchableOpacity>
-        </ImageBackground>
+        </View>
     </ScrollView>
   );
 }
@@ -110,7 +112,7 @@ const styles = StyleSheet.create({
     fontFamily : "Gellatio Regular",
     fontSize:50,
     height: 100,
-    marginTop:100,
+    marginTop:50,
   },
   inputView:{
     width:"80%",

@@ -112,10 +112,9 @@ export default function JoinScreen(props) {
 
 
     <ScrollView style={styles.root}>
-        <ImageBackground
+        <View
             style={styles.content}
-            source={require("../assets/img/bg4.jpg")}
-            resizeMode="stretch">
+            >
 
 
         <Text style={styles.welcometxt}>Welcome</Text>
@@ -226,7 +225,7 @@ export default function JoinScreen(props) {
         <Text style={styles.loginText}>가입하기</Text>
         </TouchableOpacity>
         
-        </ImageBackground>
+        </View>
     </ScrollView >
   );
 }
